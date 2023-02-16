@@ -1,7 +1,6 @@
 package com.swp.g3.service;
 
 import com.swp.g3.entity.Customer;
-import com.swp.g3.entity.CustomerDetails;
 import com.swp.g3.repository.CustomerRepository;
 import com.swp.g3.repository.ManagerRepository;
 import com.swp.g3.repository.StaffRepository;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CustomerService implements UserDetailsService {
+public class CustomerService  {
     @Autowired
     CustomerRepository customerRepository;
     @Autowired
@@ -46,14 +45,5 @@ public class CustomerService implements UserDetailsService {
     public Customer findOneByUsernameAndPassword(String username, String password){
         return customerRepository.findOneByUsernameAndPassword(username, password);
     }
-    @Transactional
-    public CustomerDetails loadUserByUsername(String username){
-        Customer c = customerRepository.findOneByUsername(username);
-        if(c == null){
-            throw new UsernameNotFoundException(username);
-        }
-        return new CustomerDetails(c);
-    }
-
 }
 
