@@ -1,22 +1,27 @@
 package com.swp.g3.entity;
 
 import org.hibernate.annotations.GeneratorType;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.sql.Date;
 
 @Entity
 public class Compensation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Nationalized
     private String images;
+    @Nationalized
     private String accidentAddress;
-    private String accidentTime;
+    private Date accidentTime;
     private float payment;
     private int contractId;
+    @Nationalized
     private String status;
     private int customerId;
     private int managerId;
@@ -46,11 +51,11 @@ public class Compensation {
         this.accidentAddress = accidentAddress;
     }
 
-    public String getAccidentTime() {
+    public Date getAccidentTime() {
         return accidentTime;
     }
 
-    public void setAccidentTime(String accidentTime) {
+    public void setAccidentTime(Date accidentTime) {
         this.accidentTime = accidentTime;
     }
 
