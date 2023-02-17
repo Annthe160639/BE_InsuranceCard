@@ -4,6 +4,9 @@ import com.swp.g3.entity.Customer;
 import com.swp.g3.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpSession;
 
 @RestController
 public class CustomerController {
@@ -35,6 +38,7 @@ public class CustomerController {
     public Customer CustomerDetail(@PathVariable Integer id){
         return customerService.findOneById(id);
     }
+
 
 
 
