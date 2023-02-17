@@ -17,20 +17,20 @@ public class InsuranceCardApplication {
 		SpringApplication.run(InsuranceCardApplication.class, args);
 	}
 
-	@Bean(name = "dataSource")
-	public DriverManagerDataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		dataSource.setUrl("jdbc:sqlserver://localhost:1433;databaseName=demo_spring_boot;encrypt=true;trustServerCertificate=true;");
-		dataSource.setUsername("g3");
-		dataSource.setPassword("123456");
-
-		// schema init
-		Resource initSchema = new ClassPathResource("schema.sql");
-		Resource initData = new ClassPathResource("data.sql");
-		DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
-		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
-		return dataSource;
-	}
+//	@Bean(name = "dataSource")
+//	public DriverManagerDataSource dataSource() {
+//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//		dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+//		dataSource.setUrl("jdbc:sqlserver://localhost:1433;databaseName=demo_spring_boot;encrypt=true;trustServerCertificate=true;");
+//		dataSource.setUsername("g3");
+//		dataSource.setPassword("123456");
+//
+//		// schema init
+//		Resource initSchema = new ClassPathResource("schema.sql");
+//		Resource initData = new ClassPathResource("data.sql");
+//		DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
+//		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
+//
+//		return dataSource;
+//	}
 }
