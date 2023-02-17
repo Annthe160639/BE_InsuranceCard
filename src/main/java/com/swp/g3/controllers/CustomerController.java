@@ -32,9 +32,11 @@ public class CustomerController {
 //    }
 
     @GetMapping(value = "api/customer/detail/{id}")
-    public boolean checkExistedId(@PathVariable Integer id){
-        return customerService.
+    public Customer CustomerDetail(@PathVariable Integer id){
+        return customerService.findOneById(id);
     }
+
+
 
 }
 
