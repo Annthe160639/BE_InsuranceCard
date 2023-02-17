@@ -15,6 +15,7 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotEmpty(message = "Thiếu tên người dùng")
+
     private String username;
     @NotEmpty(message = "Thiếu mật khẩu")
     private String password;

@@ -9,6 +9,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 @Component
 public class EmailHelper {
@@ -17,7 +18,17 @@ public class EmailHelper {
     public String generateVerifyLink(String username){
         System.out.println(username);
         try {
-            String link = "<a>http://localhost:8080/api/user/verify/" + crypto.encrypt(username);
+            String link = "<a>http://localhost:8080/api/customer/verify/" + crypto.encrypt(username + "|" + new Date().getTime());
+            return link;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String generateResetPasswordLink(String username){
+        System.out.println(username);
+        try {
+            String link = "<a>http://localhost:8080/api/customer/password/reset/" + crypto.encrypt(username + "|" + new Date().getTime());
             return link;
         } catch (Exception e) {
             e.printStackTrace();

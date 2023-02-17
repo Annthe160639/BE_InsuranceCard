@@ -15,7 +15,7 @@ public class EmailService {
     private JavaMailSender mailSender;
     @Autowired
     private EmailHelper emailHelper;
-    public void sendEmail(String toEmail, String username, String name) throws MessagingException{
+    public void sendVerifyEmail(String toEmail, String username, String name) throws MessagingException{
             String from = "annthe160639@fpt.edu.vn";
 
             MimeMessage message = mailSender.createMimeMessage();
@@ -26,9 +26,25 @@ public class EmailService {
             helper.setTo(toEmail);
 
             boolean html = true;
-            String text = "<b>Xin chào " + name + "</b>,<br><i>Chào mừng đến với Bảo Hiểm Xe Máy</i><br>Vui lòng nhấn vào liên kết bên dưới để hoàn tất quá trình đăng ký: <br><a>"
+            String text = "<b>Xin chào " + name + "</b>,<br><i>Chào mừng đến với Bảo Hiểm Xe Máy</i><br>Vui lòng nhấn vào liên kết bên dưới để hoàn tất quá trình đăng ký: <br> <a href=''>"
                             + emailHelper.generateVerifyLink(username) + "</a>";
             helper.setText(text, html);
             mailSender.send(message);
+    }
+    public void sendResetPasswordEmail(String toEmail, String username, String name) throws MessagingException{
+        String from = "annthe160639@fpt.edu.vn";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setSubject("ĐẶT LẠI MẬT KHẨU");
+        helper.setFrom(from);
+        helper.setTo(toEmail);
+
+        boolean html = true;
+        String text = "<b>Xin chào " + name + "</b>,<br><i>Chào mừng đến với Bảo Hiểm Xe Máy</i><br>Vui lòng nhấn vào liên kết bên dưới để cài đặt lại mật khẩu: <br> <a href='#'>"
+                + emailHelper.generateResetPasswordLink(username) + "</a>";
+        helper.setText(text, html);
+        mailSender.send(message);
     }
 }
