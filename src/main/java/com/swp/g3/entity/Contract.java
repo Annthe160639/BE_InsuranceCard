@@ -1,5 +1,7 @@
 package com.swp.g3.entity;
 
+import org.hibernate.annotations.Nationalized;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,10 +14,12 @@ public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Nationalized
     private String pattern;
     private int typeId;
     private Date startDate;
     private Date endDate;
+    @Nationalized
     private String status;
     private int managerId;
     private int staffId;

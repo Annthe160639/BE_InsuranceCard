@@ -1,6 +1,6 @@
 package com.swp.g3.entity;
 
-import org.springframework.lang.Nullable;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,19 +18,20 @@ public class Customer {
     private String username;
     @NotEmpty(message = "Thiếu mật khẩu")
     private String password;
-    @NotEmpty(message = "Thiếu tên")
+
+
     private String name;
     @NotEmpty(message = "Thiếu số điện thoại")
     private String phone;
     @Email(message = "Email không hợp lệ")
     @NotEmpty(message = "Thiếu gmail")
     private String gmail;
-    @NotEmpty(message = "Thiếu địa chỉ")
+
+
     private String address;
     @NotEmpty(message = "Thiếu số căn cước công dân")
     private String ci;
-    private boolean isActive = false;
-    private String role = "customer" ;
+
     private int managerId;
 
     public int getId() {

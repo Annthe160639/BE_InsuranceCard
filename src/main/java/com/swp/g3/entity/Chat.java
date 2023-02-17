@@ -1,5 +1,7 @@
 package com.swp.g3.entity;
 
+import org.hibernate.annotations.Nationalized;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +13,7 @@ public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Nationalized
     private String content;
     private Date sendDate;
     private int staffId;
