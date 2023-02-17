@@ -9,6 +9,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     public Customer save(Customer newCustomer);
     public Customer findOneByUsername(String username);
     public Customer findOneByGmail(String gmail);
+
+    public Customer findOneById(Integer id);
 }
 
 
