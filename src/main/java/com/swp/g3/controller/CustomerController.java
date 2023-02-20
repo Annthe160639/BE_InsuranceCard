@@ -1,6 +1,8 @@
 package com.swp.g3.controller;
 
 import com.swp.g3.entity.Customer;
+import com.swp.g3.entity.CustomerDetails;
+import com.swp.g3.jwt.JwtTokenProvider;
 import com.swp.g3.service.EmailService;
 import com.swp.g3.service.CustomerService;
 import com.swp.g3.util.Crypto;
@@ -9,6 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +41,10 @@ public class CustomerController {
     CustomerService customerService;
     @Autowired
     EmailService emailService;
-
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
     @PostMapping(value = "/api/customer/register")
     public boolean register(@Valid @RequestBody Customer customer) {
         try {
@@ -76,7 +85,24 @@ public class CustomerController {
         Page<Customer> p = customerService.findCustomers(pageable);
         return p;
     }
+    @PostMapping("/api/login")
+    public String authenticateUser(@RequestParam String username, @RequestParam @NotNull String password) {
 
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        username,
+                        password
+                )
+        );
+        System.out.println(password);
+        // Nếu không xảy ra exception tức là thông tin hợp lệ
+        // Set thông tin authentication vào Security Context
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Trả về jwt cho người dùng.
+        String jwt = jwtTokenProvider.generateToken((CustomerDetails) authentication.getPrincipal());
+        return jwt;
+    }
     @PostMapping(value = "/api/customer/login")
     public String login(@RequestParam String username, @NotNull String password) {
         String status = "";
@@ -99,7 +125,7 @@ public class CustomerController {
                 }
             }
         } else {
-            status = "Sai tên đăng nhập.";
+            status = "Người dùng không hợp lệ.";
         }
         return status;
     }
