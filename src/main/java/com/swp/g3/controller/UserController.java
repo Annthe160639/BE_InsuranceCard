@@ -11,28 +11,28 @@ import javax.validation.Valid;
 @RestController
 public class UserController {
 
-    @Autowired
-    UserService userService;
-    @Autowired
-    EmailService emailService;
-    @PostMapping(value = "/api/user/register")
-    public boolean register(@Valid @RequestBody Customer customer){
-        try{
-            userService.save(customer);
-            emailService.sendEmail(customer.getGmail(), customer.getUsername(), customer.getName());
-            return true;
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-    @GetMapping(value = "/api/user/username/duplicate/{username}")
-    public boolean checkExistedUsername(@PathVariable String username){
-        return userService.findOneByUsername(username) != null;
-    }
-
-    @GetMapping(value = "/api/user/gmail/duplicate/{gmail}")
-    public boolean checkExistedEmail(@PathVariable String gmail){
-        return userService.findOneByGmail(gmail) != null;
-    }
+//    @Autowired
+//    UserService userService;
+//    @Autowired
+//    EmailService emailService;
+//    @PostMapping(value = "/api/user/register")
+//    public boolean register(@Valid @RequestBody Customer customer){
+//        try{
+//            userService.save(customer);
+//            emailService.sendEmail(customer.getGmail(), customer.getUsername(), customer.getName());
+//            return true;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+//    @GetMapping(value = "/api/user/username/duplicate/{username}")
+//    public boolean checkExistedUsername(@PathVariable String username){
+//        return userService.findOneByUsername(username) != null;
+//    }
+//
+//    @GetMapping(value = "/api/user/gmail/duplicate/{gmail}")
+//    public boolean checkExistedEmail(@PathVariable String gmail){
+//        return userService.findOneByGmail(gmail) != null;
+//    }
 }

@@ -18,21 +18,18 @@ public class Customer {
     private String username;
     @NotEmpty(message = "Thiếu mật khẩu")
     private String password;
-
-
     private String name;
     @NotEmpty(message = "Thiếu số điện thoại")
     private String phone;
     @Email(message = "Email không hợp lệ")
     @NotEmpty(message = "Thiếu gmail")
     private String gmail;
-
-
     private String address;
     @NotEmpty(message = "Thiếu số căn cước công dân")
     private String ci;
-
     private int managerId;
+    private String role;
+    private boolean isActive;
 
     public int getId() {
         return id;
