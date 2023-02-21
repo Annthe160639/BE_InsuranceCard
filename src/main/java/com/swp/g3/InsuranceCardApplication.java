@@ -16,7 +16,6 @@ public class InsuranceCardApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(InsuranceCardApplication.class, args);
-		System.out.println(new BCryptPasswordEncoder().encode("anntc"));;
 	}
 
 	@Bean(name = "dataSource")

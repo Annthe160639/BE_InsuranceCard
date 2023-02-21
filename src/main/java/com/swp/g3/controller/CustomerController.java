@@ -22,6 +22,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -85,26 +86,8 @@ public class CustomerController {
         Page<Customer> p = customerService.findCustomers(pageable);
         return p;
     }
-    @PostMapping("/api/login")
-    public String authenticateUser(@RequestParam String username, @RequestParam @NotNull String password) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        username,
-                        password
-                )
-        );
-        System.out.println(password);
-        // Nếu không xảy ra exception tức là thông tin hợp lệ
-        // Set thông tin authentication vào Security Context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Trả về jwt cho người dùng.
-        String jwt = jwtTokenProvider.generateToken((CustomerDetails) authentication.getPrincipal());
-        return jwt;
-    }
     @PostMapping(value = "/api/customer/login")
-    public String login(@RequestParam String username, @NotNull String password) {
+    public String login(HttpSession session, @RequestParam String username, @NotNull String password) {
         String status = "";
         Customer c = customerService.findOneByUsername(username);
         if (c != null) {
@@ -117,6 +100,7 @@ public class CustomerController {
                     if (c == null) {
                         status = "Sai mật khẩu";
                     } else {
+                        session.setAttribute("customer", c);
                         status = "Đăng nhập thành công.";
                     }
                 } catch (Exception e) {
