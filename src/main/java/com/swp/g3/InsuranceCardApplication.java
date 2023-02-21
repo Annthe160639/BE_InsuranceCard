@@ -26,10 +26,10 @@ public class InsuranceCardApplication {
 		dataSource.setPassword("123456");
 
 		// schema init
-//		Resource initSchema = new ClassPathResource("schema.sql");
-//		Resource initData = new ClassPathResource("data.sql");
-//		DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
-//		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
+		Resource initSchema = new ClassPathResource("schema.sql");
+		Resource initData = new ClassPathResource("data.sql");
+		DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
+		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
 
 		return dataSource;
 	}
