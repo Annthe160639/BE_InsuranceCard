@@ -20,7 +20,7 @@ public class CustomerService {
 
     public boolean save(Customer newCustomer){
         try{
-            customerRepository.save(newCustomer);
+            customerRepository.save(newCustomer);//insert | save
         }catch (Exception e){
             e.printStackTrace();
             return false;
