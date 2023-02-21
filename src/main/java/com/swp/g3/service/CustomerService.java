@@ -20,17 +20,14 @@ public class CustomerService {
         return true;
     }
     public Customer findOneByUsername(String username){
-        Customer c = customerRepository.findOneByUsername(username);
-        return c;
+        return customerRepository.findOneByUsername(username);
     }
     public Customer findOneByGmail(String gmail){
-        Customer c = customerRepository.findOneByGmail(gmail);
-        return c;
+        return customerRepository.findOneByGmail(gmail);
     }
 
     public Customer findOneById(Integer id){
-        Customer c = customerRepository.findOneById(id);
-        return c;
+        return customerRepository.findOneById(id);
     }
 
 }
