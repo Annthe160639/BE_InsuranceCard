@@ -50,7 +50,7 @@ CREATE TABLE [dbo].[contract_type](
 CREATE TABLE [dbo].[customer](
     [id] [int] IDENTITY(1,1) PRIMARY KEY,
     [username] [nvarchar](50) NULL,
-    [password] [nvarchar](50) NULL,
+    [password] [nvarchar](255) NULL,
     [name] [nvarchar](50) NULL,
     [gmail] [nvarchar](50) NULL,
     [phone] [nvarchar](50) NULL,
@@ -64,14 +64,14 @@ CREATE TABLE [dbo].[customer](
 CREATE TABLE [dbo].[manager](
     [id] [int] IDENTITY(1,1) PRIMARY KEY,
     [username] [nvarchar](50) NULL,
-    [password] [nvarchar](50) NULL,
+    [password] [nvarchar](255   ) NULL,
     [role] [nvarchar](50) NULL
     );
 
 CREATE TABLE [dbo].[staff](
     [id] [int] IDENTITY(1,1) PRIMARY KEY,
     [username] [nvarchar](50) NULL,
-    [password] [nvarchar](50) NULL,
+    [password] [nvarchar](255) NULL,
     [role] [nvarchar](50) NULL,
     [manager_id] [int] NULL
     );

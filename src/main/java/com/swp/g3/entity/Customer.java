@@ -1,5 +1,6 @@
 package com.swp.g3.entity;
 
+import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -33,7 +34,11 @@ public class Customer {
     private boolean isActive = false;
     private String role = "customer" ;
     private int managerId;
-
+    public Customer(){}
+    public Customer(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
     public int getId() {
         return id;
     }
