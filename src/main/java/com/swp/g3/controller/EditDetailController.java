@@ -9,15 +9,11 @@ import org.springframework.web.bind.annotation.*;
 public class EditDetailController {
     CustomerRepository customerRepository;
 
-    @RequestMapping(value = "/welcome", method = RequestMethod.GET)
-    public String showWelcmPage(Model model) {
-        return "welcome";
-    }
 
     @RequestMapping(value = "welcome/edit/{username}", method = RequestMethod.GET)
     public String getEditUserData(@PathVariable("username") String username, Model model, Customer accountForm) {
 
-        model.addAttribute("accountEmail", username);
+        model.addAttribute("username", username);
         return "editProfile";
     }
 
