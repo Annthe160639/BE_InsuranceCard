@@ -70,24 +70,9 @@ public class CustomerController {
         return customerService.findOneByGmail(gmail) != null;
     }
 
-    @GetMapping(value = "/api/customer/username/list")
-    public Page<Customer> listCustomer(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
 
-        Sort sortable = null;
-        if (sort.equals("ASC")) {
-            sortable = Sort.by("id").ascending();
-        }
-        if (sort.equals("DESC")) {
-            sortable = Sort.by("id").descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sortable);
-        Page<Customer> p = customerService.findCustomers(pageable);
-        return p;
-    }
     @PostMapping(value = "/api/customer/login")
-    public String login(HttpSession session, @RequestParam String username, @NotNull String password) {
+    public String login(HttpSession session, @RequestParam @NotNull String username, @NotNull String password) {
         String status = "";
         Customer c = customerService.findOneByUsername(username);
         if (c != null) {

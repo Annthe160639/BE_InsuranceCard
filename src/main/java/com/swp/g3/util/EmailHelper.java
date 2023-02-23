@@ -18,7 +18,7 @@ public class EmailHelper {
     public String generateVerifyLink(String username){
         System.out.println(username);
         try {
-            String link = "<a>http://localhost:8080/api/customer/verify/" + crypto.encrypt(username + "|" + new Date().getTime());
+            String link = "http://localhost:8080/api/customer/verify/" + crypto.encrypt(username + "|" + new Date().getTime());
             return link;
         } catch (Exception e) {
             e.printStackTrace();
@@ -28,7 +28,7 @@ public class EmailHelper {
     public String generateResetPasswordLink(String username){
         System.out.println(username);
         try {
-            String link = "<a>http://localhost:8080/api/customer/password/reset/" + crypto.encrypt(username + "|" + new Date().getTime());
+            String link = "http://localhost:8080/api/customer/password/reset/" + crypto.encrypt(username + "|" + new Date().getTime());
             return link;
         } catch (Exception e) {
             e.printStackTrace();

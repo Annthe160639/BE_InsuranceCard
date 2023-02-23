@@ -42,7 +42,7 @@ public class EmailService {
         helper.setTo(toEmail);
 
         boolean html = true;
-        String text = "<b>Xin chào " + name + "</b>,<br><i>Chào mừng đến với Bảo Hiểm Xe Máy</i><br>Vui lòng nhấn vào liên kết bên dưới để cài đặt lại mật khẩu: <br> <a href='#'>"
+        String text = "<b>Xin chào " + name + "</b>,<br><i>Chào mừng đến với Bảo Hiểm Xe Máy</i><br>Vui lòng nhấn vào liên kết bên dưới để cài đặt lại mật khẩu: <br> <a href=''>"
                 + emailHelper.generateResetPasswordLink(username) + "</a>";
         helper.setText(text, html);
         mailSender.send(message);
