@@ -72,7 +72,11 @@ public class CustomerController {
 
 
     @PostMapping(value = "/api/customer/login")
-    public String login(HttpSession session, @RequestParam @NotNull String username, @NotNull String password) {
+    @ResponseBody
+    public String login(HttpSession session,
+                        @RequestBody(required = false) Customer customer){
+        String username = customer.getUsername();
+        String password = customer.getPassword();
         String status = "";
         Customer c = customerService.findOneByUsername(username);
         if (c != null) {
