@@ -1,31 +1,44 @@
 package com.swp.g3.entity;
 
-import org.hibernate.annotations.Nationalized;
+import lombok.AllArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String username;
-    private String password;
-    @Nationalized
-    private String name;
-    private String phone;
-    private String gmail;
-    @Nationalized
-    private String address;
-    private String ci;
-    private boolean isActive;
-    @Nationalized
-    private String role;
-    private int managerId;
+    @NotEmpty(message = "Thiếu tên người dùng")
 
+    private String username;
+    @NotEmpty(message = "Thiếu mật khẩu")
+    private String password;
+    @NotEmpty(message = "Thiếu tên")
+    private String name;
+    @NotEmpty(message = "Thiếu số điện thoại")
+    private String phone;
+    @Email(message = "Email không hợp lệ")
+    @NotEmpty(message = "Thiếu gmail")
+    private String gmail;
+    @NotEmpty(message = "Thiếu địa chỉ")
+    private String address;
+    @NotEmpty(message = "Thiếu số căn cước công dân")
+    private String ci;
+    private boolean isActive = false;
+    private String role = "customer" ;
+    private int managerId;
+    public Customer(){}
+    public Customer(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
     public int getId() {
         return id;
     }

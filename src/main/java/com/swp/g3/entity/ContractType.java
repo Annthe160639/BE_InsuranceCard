@@ -1,24 +1,16 @@
 package com.swp.g3.entity;
 
-import org.hibernate.annotations.Nationalized;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ContractType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Nationalized
     private String name;
-    @Nationalized
     private String vehicleType;
     private float price;
     private float insuranceLevel;
-    @Nationalized
     private String description;
     private int managerId;
 
