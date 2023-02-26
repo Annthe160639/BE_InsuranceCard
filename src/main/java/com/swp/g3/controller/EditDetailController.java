@@ -25,11 +25,16 @@ public class EditDetailController {
     }
 
     @RequestMapping(value = "editProfile", method = RequestMethod.POST)
-    public String sendEditProfilePage(@ModelAttribute("accountForm") Customer customer, Model model) {
+    public String sendEditProfilePage(@ModelAttribute("accountForm") Customer customer) {
         Customer accountInstance = customerRepository.findOneByUsername(customer.getUsername());
 
-        accountInstance.setUsername(customer.getUsername());
-        accountInstance.setPassword(customer.getPassword());
+        accountInstance.setName(customer.getName());
+        accountInstance.setPassword(customer.getGmail());
+        accountInstance.setPhone(customer.getPhone());
+        accountInstance.setAddress(customer.getAddress());
+        accountInstance.setCi(customer.getCi());
+        accountInstance.setManagerId(customer.getManagerId());
+
 
         customerRepository.save(customer);
 
