@@ -126,4 +126,21 @@ public class Customer {
     public void setManagerId(int managerId) {
         this.managerId = managerId;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", gmail='" + gmail + '\'' +
+                ", address='" + address + '\'' +
+                ", ci='" + ci + '\'' +
+                ", isActive=" + isActive +
+                ", role='" + role + '\'' +
+                ", managerId=" + managerId +
+                '}';
+    }
 }
