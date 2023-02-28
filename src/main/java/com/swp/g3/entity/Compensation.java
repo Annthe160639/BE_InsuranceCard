@@ -24,8 +24,8 @@ public class Compensation {
     @Nationalized
     private String status;
     private int customerId;
-    private int managerId;
-    private int staffId;
+    private int managerId = 1;
+    private int staffId = 1;
 
     public int getId() {
         return id;

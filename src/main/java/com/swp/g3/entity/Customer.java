@@ -1,5 +1,7 @@
 package com.swp.g3.entity;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 
@@ -14,7 +16,8 @@ import javax.validation.constraints.NotEmpty;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private Integer id = null;
     @NotEmpty(message = "Thiếu tên người dùng")
 
     private String username;
@@ -33,17 +36,19 @@ public class Customer {
     private String ci;
     private boolean isActive = false;
     private String role = "customer" ;
-    private int managerId;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private Integer managerId = 1;
     public Customer(){}
     public Customer(String username, String password){
         this.username = username;
         this.password = password;
     }
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -125,5 +130,22 @@ public class Customer {
 
     public void setManagerId(int managerId) {
         this.managerId = managerId;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", gmail='" + gmail + '\'' +
+                ", address='" + address + '\'' +
+                ", ci='" + ci + '\'' +
+                ", isActive=" + isActive +
+                ", role='" + role + '\'' +
+                ", managerId=" + managerId +
+                '}';
     }
 }

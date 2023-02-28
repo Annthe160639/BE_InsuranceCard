@@ -47,8 +47,10 @@ public class CustomerController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @PostMapping(value = "/api/customer/register")
+
     public boolean register(@Valid @RequestBody Customer customer) {
         try {
+            System.out.println(customer);
             String encryptedPassword = crypto.encrypt(customer.getPassword());
             customer.setPassword(encryptedPassword);
             customerService.save(customer);
