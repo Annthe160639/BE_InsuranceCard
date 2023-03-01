@@ -17,3 +17,4 @@ public class GlobalHandelException {
         return errorMessage;
     }
 }
+

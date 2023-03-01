@@ -1,12 +1,11 @@
 package com.swp.g3.controller;
 
 import com.swp.g3.entity.ContractType;
+import com.swp.g3.repository.ContractRepository;
+import com.swp.g3.repository.ContractTypeRepository;
 import com.swp.g3.service.ContractTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,13 +13,30 @@ import java.util.List;
 public class ContractTypeController {
     @Autowired
     ContractTypeService contractTypeService;
+    @Autowired
+    ContractTypeRepository contractTypeRepository;
 
-    @RequestMapping(value = "/api/contract/type/list")
-    public List<ContractType> showListContractType(){
-        return contractTypeService.findAll();
-    }
-    @GetMapping(value = "/api/contract/type/detail/{id}")
-    public ContractType showContractTypeDetail(@PathVariable int id){
-        return contractTypeService.findOneById(id);
+//    @RequestMapping(value = "/api/contract/type/list")
+//    public List<ContractType> showListContractType(){
+//        return contractTypeService.findAll();
+//    }
+//    @GetMapping(value = "/api/contract/type/detail/{id}")
+//    public ContractType showContractTypeDetail(@PathVariable int id){
+//        return contractTypeService.findOneById(id);
+//    }
+
+    // edit contract type
+    @PostMapping("/api/contract/type/edit")
+    public String editcontracttype(@ModelAttribute("editcontracttypeForm") ContractType contractType) {
+       ContractType contrType = contractTypeRepository.findOneById(contractType.getId());
+
+       contrType.setName(contractType.getName());
+        contrType.setVehicleType(contractType.getVehicleType());
+        contrType.setPrice(contractType.getPrice());
+        contrType.setInsuranceLevel(contractType.getInsuranceLevel());
+        contrType.setDescription(contractType.getDescription());
+        contrType.setManagerId(contractType.getManagerId());
+        contractTypeRepository.save(contrType);
+        return "Update Successfully";
     }
 }
