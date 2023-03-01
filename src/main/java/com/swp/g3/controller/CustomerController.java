@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -76,33 +79,31 @@ public class CustomerController {
     @PostMapping(value = "/api/customer/login")
     @ResponseBody
     public String login(HttpSession session,
-                        @RequestBody(required = false) Customer customer){
+                        @RequestBody(required = false) Customer customer,
+                        HttpServletResponse response){
         String username = customer.getUsername();
         String password = customer.getPassword();
-        String status = "";
         Customer c = customerService.findOneByUsername(username);
         if (c != null) {
             if (c.isActive() == false) {
-                status = "Tài khoản của bạn chưa được xác thực.";
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             } else {
                 try {
                     String encryptedPassword = crypto.encrypt(password);
                     c = customerService.findOneByUsernameAndPassword(username, encryptedPassword);
                     if (c == null) {
-                        status = "Sai mật khẩu";
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     } else {
                         session.setAttribute("customer", c);
-                        status = "Đăng nhập thành công.";
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return "Mã hóa mật khẩu lỗi.";
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
-        } else {
-            status = "Người dùng không hợp lệ.";
         }
-        return status;
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return "aaa";
     }
 
     @GetMapping(value = "/api/customer/password/reset")

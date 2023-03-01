@@ -16,10 +16,6 @@ public class Manager {
     private String password;
     @Nationalized
     private String role;
-    @Nationalized
-    private String name;
-    private String phone;
-    private String gmail;
 
     public int getId() {
         return id;
@@ -53,27 +49,7 @@ public class Manager {
         this.role = role;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getPhone() {
-        return phone;
-    }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getGmail() {
-        return gmail;
-    }
-
-    public void setGmail(String gmail) {
-        this.gmail = gmail;
-    }
 }
