@@ -1,7 +1,5 @@
 package com.swp.g3.entity;
 
-import org.hibernate.annotations.Nationalized;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +13,9 @@ public class Staff {
     private String username;
     private String password;
     private String role;
-
+    private String name;
+    private String phone;
+    private String gmail;
     private int managerId;
 
     public int getId() {

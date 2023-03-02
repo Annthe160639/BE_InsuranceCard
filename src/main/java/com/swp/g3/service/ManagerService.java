@@ -16,4 +16,7 @@ public class ManagerService {
     public Manager findOneByUsernameAndPassword(String username, String password){
         return managerRepository.findOneByUsernameAndPassword(username, password);
     }
+    public Manager save(Manager manager){
+        return managerRepository.save(manager);
+    }
 }

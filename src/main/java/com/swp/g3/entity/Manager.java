@@ -1,7 +1,5 @@
 package com.swp.g3.entity;
 
-import org.hibernate.annotations.Nationalized;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +12,6 @@ public class Manager {
     private int id;
     private String username;
     private String password;
-    @Nationalized
     private String role;
 
     public int getId() {
@@ -49,7 +46,13 @@ public class Manager {
         this.role = role;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Manager{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                '}';
+    }
 }

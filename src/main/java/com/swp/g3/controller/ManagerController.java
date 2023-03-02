@@ -76,4 +76,57 @@ public class ManagerController {
         Page<Customer> p = customerService.findCustomers(pageable);
         return p;
     }
+
+    @GetMapping("login")
+    public String Login() {
+        return "login";
+    }
+
+    @GetMapping("home")
+    public String home() {
+        return "home";
+    }
+
+    @GetMapping("editinfo")
+    public String editinfo() {
+        return "editinfo";
+    }
+
+    @GetMapping("info")
+    public String info(HttpSession session, Model model) {
+        Object user = session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "info";
+    }
+    @PostMapping("check")
+    public String Check(@RequestParam("username") String username, 
+                        @RequestParam("password") String password, 
+                        Model model, 
+                        HttpSession session) {
+        Manager manager = managerService.findOneByUsername(username);
+        if(manager.getPassword().equals(password)){
+            session.setAttribute("user", manager);
+            model.addAttribute("user", session.getAttribute("user"));
+            return "home";
+        }else {
+            return "redirect:/login";
+        }
+    }
+    @PostMapping("checkpasstoeditinfo")
+    public String checkpasstoeditinfo(@RequestParam("cfmpass") String pass, 
+                                      @RequestParam("username") String username,
+                                      @RequestParam("password") String password, 
+                                      HttpSession session, 
+                                      Model model) {
+        Manager user = (Manager) session.getAttribute("user");
+        if (user.getPassword().equals(pass)) {
+            user.setUsername(username);
+            user.setPassword(password);
+            Manager updatedUser = repository.save(user);
+            ResponseEntity.ok(updatedUser);
+        }
+        Object user1 = session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "info";
+    }
 }
