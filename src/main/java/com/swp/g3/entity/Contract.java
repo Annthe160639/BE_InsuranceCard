@@ -24,7 +24,8 @@ public class Contract {
     private int managerId = 1;
     private int staffId = 1;
     private int customerId;
-
+    private int buyerId;
+    private Buyer buyer;
     public int getId() {
         return id;
     }
@@ -95,5 +96,19 @@ public class Contract {
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
+    }
+
+    public int getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(int buyerId) {
+        this.buyerId = buyerId;
+    }
+    public Buyer getBuyer() {
+        return buyer;
+    }
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
 }

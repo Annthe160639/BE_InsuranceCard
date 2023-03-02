@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CompensationRepository extends JpaRepository<Compensation, Integer> {
     public List<Compensation> findAllByCustomerId(int id);
+
+    public List<Compensation> findAllByStatus(String status);
 }

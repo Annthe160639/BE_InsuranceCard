@@ -17,12 +17,12 @@ public class CompensationController {
     CompensationService compensationService;
     @GetMapping (value = "/api/customer/compensation/list")
     public List<Compensation> viewAll(HttpSession session){
-        return compensationService.findAllByCustomerId(1);
-//        Customer customer = (Customer)session.getAttribute("customer");
-//        if(customer == null){
-//            return null;
-//        }else {
-//            return compensationService.findAllByCustomerId(customer.getId());
-//        }
+        Customer customer = (Customer)session.getAttribute("customer");
+        if(customer == null){
+            return null;
+        }else {
+            return compensationService.findAllByCustomerId(customer.getId());
+        }
     }
+
 }
