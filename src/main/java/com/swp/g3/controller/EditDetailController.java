@@ -12,21 +12,21 @@ public class EditDetailController {
     CustomerRepository customerRepository;
 
 
-    @RequestMapping(value = "/welcome/edit/{username}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/customer/profile/edit/{username}", method = RequestMethod.GET)
     public String getEditUserData(@PathVariable("username") String username, Model model, Customer accountForm) {
 
         model.addAttribute("username", username);
         return "editProfile";
     }
 
-    @RequestMapping(value = "/editProfile", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/customer/profile/editProfile", method = RequestMethod.GET)
     public String showEditProfilePage(Model model, Customer customer) {
         model.addAttribute("username", customer.getUsername());
         model.addAttribute("password", customer.getPassword());
         return "editProfile";
     }
 
-    @RequestMapping(value = "/editProfile", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/customer/profile/editProfile", method = RequestMethod.POST)
     public String sendEditProfilePage(@RequestBody Customer customer) {
 
         Customer accountInstance = customerRepository.findOneByUsername(customer.getUsername());
