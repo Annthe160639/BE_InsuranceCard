@@ -130,5 +130,18 @@ public class CustomerController {
         }
     }
 
+    //for all custommer
+    @GetMapping(value = "/api/customer/getAll")
+    public List<Customer> getAllCustomer() {
+        return customerService.getAllCustomers();
+    }
+
+    //for getting one pet with unique id
+    @GetMapping("/api/customer/getAll/{id}")
+    public Customer getCustomerById(@RequestBody int customerId) {
+        Customer customer = new Customer(customerService.getCustomerById(customerId));
+        return customer;
+    }
+
 
 }
