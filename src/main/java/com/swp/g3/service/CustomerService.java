@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CustomerService implements UserDetailsService {
     @Autowired
@@ -53,6 +55,20 @@ public class CustomerService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         return new CustomerDetails(c);
+    }
+
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
+
+    public Customer getCustomerById(int customerId) {
+        Customer customer = customerRepository.findByID(customerId);
+        if (customer.isActive()) {
+            return customer;
+        }
+        else {
+            return null;
+        }
     }
 
 }
