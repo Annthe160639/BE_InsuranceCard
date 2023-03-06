@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -122,7 +124,7 @@ public class ManagerController {
         if (user.getPassword().equals(pass)) {
             user.setUsername(username);
             user.setPassword(password);
-            Manager updatedUser = repository.save(user);
+            Manager updatedUser = managerService.save(user);
             ResponseEntity.ok(updatedUser);
         }
         Object user1 = session.getAttribute("user");

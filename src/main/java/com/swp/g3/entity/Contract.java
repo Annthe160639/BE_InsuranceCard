@@ -2,10 +2,7 @@ package com.swp.g3.entity;
 
 import org.hibernate.annotations.Nationalized;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
@@ -21,10 +18,11 @@ public class Contract {
     private Date endDate;
     @Nationalized
     private String status = "Đang chờ xử lý.";
-    private int managerId = 1;
-    private int staffId = 1;
+    private int managerId;
+    private int staffId;
     private int customerId;
     private int buyerId;
+    @Transient
     private Buyer buyer;
     public int getId() {
         return id;

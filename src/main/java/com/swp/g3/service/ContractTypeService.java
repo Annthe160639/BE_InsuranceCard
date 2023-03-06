@@ -19,5 +19,8 @@ public class ContractTypeService {
     public ContractType findOneById(int id){
         return contractTypeRepository.findOneById(id);
     }
+    public ContractType save(ContractType contractType){
+        return contractTypeRepository.save(contractType);
+    }
 
 }

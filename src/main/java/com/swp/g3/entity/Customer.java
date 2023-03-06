@@ -35,7 +35,7 @@ public class Customer {
     private boolean isActive = false;
     private String role = "customer";
     @JsonSetter(nulls = Nulls.SKIP)
-    private Integer managerId = 1;
+    private Integer managerId;
 
     public Customer(){}
 

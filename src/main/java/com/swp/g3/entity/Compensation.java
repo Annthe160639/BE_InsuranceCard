@@ -22,10 +22,10 @@ public class Compensation {
     private float payment;
     private int contractId;
     @Nationalized
-    private String status;
+    private String status = "Đang chờ xử lý.";
     private int customerId;
-    private int managerId = 1;
-    private int staffId = 1;
+    private int managerId;
+    private int staffId;
 
     public int getId() {
         return id;

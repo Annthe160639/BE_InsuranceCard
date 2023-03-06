@@ -12,4 +12,6 @@ public interface ContractTypeRepository extends JpaRepository<ContractType, Inte
 
     public ContractType findOneById(int id);
 
+    public ContractType save(ContractType contractType);
+
 }
