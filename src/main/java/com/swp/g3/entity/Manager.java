@@ -14,6 +14,8 @@ public class Manager {
     private String password;
     private String role;
 
+    public Manager(){}
+
     public int getId() {
         return id;
     }

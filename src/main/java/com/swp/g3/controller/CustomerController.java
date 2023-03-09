@@ -3,6 +3,7 @@ package com.swp.g3.controller;
 import com.swp.g3.entity.Customer;
 import com.swp.g3.entity.CustomerDetails;
 import com.swp.g3.jwt.JwtTokenProvider;
+import com.swp.g3.repository.CustomerRepository;
 import com.swp.g3.service.EmailService;
 import com.swp.g3.service.CustomerService;
 import com.swp.g3.util.Crypto;
@@ -46,23 +47,103 @@ public class CustomerController {
     @Autowired
     EmailService emailService;
     @Autowired
+    CustomerRepository customerRepository;
+    @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @PostMapping(value = "/api/customer/register")
 
     public boolean register(@Valid @RequestBody Customer customer) {
+
+//    @PostMapping(value = "/api/customer/register")
+//    public boolean register(@Valid @RequestBody Customer customer) {
+//        try {
+//            String encryptedPassword = crypto.encrypt(customer.getPassword());
+//            customer.setPassword(encryptedPassword);
+//            customerService.save(customer);
+//            emailService.sendVerifyEmail(customer.getGmail(), customer.getUsername(), customer.getName());
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+//
+//    @GetMapping(value = "/api/customer/username/duplicate/{username}")
+//    public boolean checkExistedUsername(@PathVariable String username) {
+//        return customerService.findOneByUsername(username) != null;
+//    }
+//
+//    @GetMapping(value = "/api/customer/gmail/duplicate/{gmail}")
+//    public boolean checkExistedEmail(@PathVariable String gmail) {
+//        return customerService.findOneByGmail(gmail) != null;
+//    }
+//
+//
+//    @PostMapping(value = "/api/customer/login")
+//    @ResponseBody
+//    public String login(HttpSession session,
+//                        @RequestBody(required = false) Customer customer){
+//        String username = customer.getUsername();
+//        String password = customer.getPassword();
+//        String status = "";
+//        Customer c = customerService.findOneByUsername(username);
+//        if (c != null) {
+//            if (c.isActive() == false) {
+//                status = "Tài khoản của bạn chưa được xác thực.";
+//            } else {
+//                try {
+//                    String encryptedPassword = crypto.encrypt(password);
+//                    c = customerService.findOneByUsernameAndPassword(username, encryptedPassword);
+//                    if (c == null) {
+//                        status = "Sai mật khẩu";
+//                    } else {
+//                        session.setAttribute("customer", c);
+//                        status = "Đăng nhập thành công.";
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    return "Mã hóa mật khẩu lỗi.";
+//                }
+//            }
+//        } else {
+//            status = "Người dùng không hợp lệ.";
+//        }
+//        return status;
+//    }
+//
+//    @GetMapping(value = "/api/customer/password/reset")
+//    public String resetPassword(@RequestParam(name = "username", required = true) String username) {
+//        Customer c = customerService.findOneByUsername(username);
+//
+//        if (c == null) return "Người dùng không hợp lệ.";
+//        else {
+//            try {
+//                emailService.sendResetPasswordEmail(c.getGmail(), c.getUsername(), c.getName());
+//                return "Hãy kiểm tra hòm thư của bạn để đặt lại mật khẩu.";
+//            } catch (MessagingException e) {
+//                e.printStackTrace();
+//                return "Người dùng không hợp lệ";
+//            }
+//        }
+//    }
+// change password
+    @PostMapping(value = "/api/customer/password/change")
+    public @ResponseBody String changepassword(@ModelAttribute("changepasswordForm") String password, HttpSession session){
+        Customer customer = (Customer) session.getAttribute("customer");
+
+
         try {
             System.out.println(customer);
             String encryptedPassword = crypto.encrypt(customer.getPassword());
             customer.setPassword(encryptedPassword);
-            customerService.save(customer);
-            emailService.sendVerifyEmail(customer.getGmail(), customer.getUsername(), customer.getName());
-            return true;
-        } catch (Exception e) {
+            customerRepository.save(customer);
+        }catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return "Mã hóa mật khẩu lỗi.";
         }
+        return "Password Updated successfully";
     }
 
     @GetMapping(value = "/api/customer/username/duplicate/{username}")

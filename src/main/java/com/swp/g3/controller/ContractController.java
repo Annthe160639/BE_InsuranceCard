@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 public class ContractController {
@@ -15,6 +16,8 @@ public class ContractController {
     ContractService contractService;
     @Autowired
     BuyerService buyerService;
+    @Autowired
+    ContractRepository contractRepository;
 
     @RequestMapping(value = "/api/customer/contract/request/{id}")
     public Contract save(@RequestBody Contract contract, @PathVariable int id, HttpSession session, @RequestBody Buyer buyer){
@@ -64,6 +67,10 @@ public class ContractController {
         contractService.save(contract);
         return contract;
     }
-
-
+    //detele contract
+    @GetMapping(value = "/api/customer/contract/view/cancel/{id}")
+    public String delete(@PathVariable int id) {
+        contractRepository.deleteById(id);
+        return "cancel successfully";
+    }
 }
