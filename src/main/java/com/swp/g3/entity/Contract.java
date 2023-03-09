@@ -23,6 +23,8 @@ public class Contract {
     private int customerId;
     private int buyerId;
     @Transient
+    private ContractType contractType;
+    @Transient
     private Buyer buyer;
     public int getId() {
         return id;
@@ -108,5 +110,13 @@ public class Contract {
     }
     public void setBuyer(Buyer buyer) {
         this.buyer = buyer;
+    }
+
+    public ContractType getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(ContractType contractType) {
+        this.contractType = contractType;
     }
 }
