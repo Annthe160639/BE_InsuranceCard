@@ -1,12 +1,13 @@
 package com.swp.g3.entity;
 
+import lombok.AllArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-
+@AllArgsConstructor
 public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,11 @@ public class Contract {
     private ContractType contractType;
     @Transient
     private Buyer buyer;
+
+    public Contract() {
+
+    }
+
     public int getId() {
         return id;
     }
@@ -118,5 +124,23 @@ public class Contract {
 
     public void setContractType(ContractType contractType) {
         this.contractType = contractType;
+    }
+
+    @Override
+    public String toString() {
+        return "Contract{" +
+                "id=" + id +
+                ", pattern='" + pattern + '\'' +
+                ", typeId=" + typeId +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", status='" + status + '\'' +
+                ", managerId=" + managerId +
+                ", staffId=" + staffId +
+                ", customerId=" + customerId +
+                ", buyerId=" + buyerId +
+                ", contractType=" + contractType +
+                ", buyer=" + buyer +
+                '}';
     }
 }

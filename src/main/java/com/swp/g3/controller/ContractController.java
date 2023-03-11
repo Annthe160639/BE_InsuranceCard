@@ -1,11 +1,16 @@
 package com.swp.g3.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.swp.g3.entity.*;
 import com.swp.g3.service.BuyerService;
 import com.swp.g3.service.ContractService;
 import com.swp.g3.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,15 +27,21 @@ public class ContractController {
     JwtTokenUtil jwtTokenUtil;
 
     @PostMapping(value = "/api/customer/contract/request/{id}")
-    public Contract save(@RequestBody Contract contract, @PathVariable int id, HttpSession session, @RequestBody Buyer buyer, HttpServletRequest request) {
-
-        contract.setTypeId(id);
-        buyerService.save(buyer);
-        contract.setBuyerId(buyer.getId());
-        Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
-        int customerId = customer.getId();
-        contract.setCustomerId(customerId);
-        return contractService.save(contract);
+    public ResponseEntity<?> save(@RequestBody ObjectNode json, @PathVariable int id, HttpSession session, HttpServletRequest request) {
+        try {
+            Contract contract = new ObjectMapper().treeToValue(json, Contract.class);
+            contract.setTypeId(id);
+            Buyer buyer = buyerService.save(contract.getBuyer());
+            contract.setBuyerId(buyer.getId());
+            Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
+            int customerId = customer.getId();
+            contract.setCustomerId(customerId);
+            System.out.println(contract);
+            contractService.save(contract);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping(value = "/api/customer/contract/history")
