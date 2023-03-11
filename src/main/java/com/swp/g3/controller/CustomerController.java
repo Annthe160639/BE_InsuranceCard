@@ -1,8 +1,6 @@
 package com.swp.g3.controller;
 
 import com.swp.g3.entity.Customer;
-import com.swp.g3.entity.CustomerDetails;
-import com.swp.g3.jwt.JwtTokenProvider;
 import com.swp.g3.repository.CustomerRepository;
 import com.swp.g3.entity.jwt.JwtRequest;
 import com.swp.g3.entity.jwt.JwtResponse;
@@ -23,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RestController
@@ -40,11 +39,7 @@ public class CustomerController {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
-
     @PostMapping(value = "/api/customer/register")
     public boolean register(@Valid @RequestBody Customer customer) {
         try {
