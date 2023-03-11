@@ -1,6 +1,7 @@
 package com.swp.g3.controller;
 
 import com.swp.g3.entity.Customer;
+import com.swp.g3.entity.Staff;
 import com.swp.g3.entity.jwt.JwtRequest;
 import com.swp.g3.entity.jwt.JwtResponse;
 import com.swp.g3.service.EmailService;
@@ -9,6 +10,7 @@ import com.swp.g3.service.JwtUserDetailsService;
 import com.swp.g3.util.Crypto;
 import com.swp.g3.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,11 +39,7 @@ public class CustomerController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private JwtUserDetailsService userDetailsService;
-
     @PostMapping(value = "/api/customer/register")
-
     public boolean register(@Valid @RequestBody Customer customer) {
         try {
             System.out.println(customer);
@@ -70,17 +68,36 @@ public class CustomerController {
     @PostMapping(value = "/api/customer/login")
     @ResponseBody
     public ResponseEntity login(@RequestBody JwtRequest authenticationRequest) {
-        try {
-            authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        String username = authenticationRequest.getUsername();
+        String password = authenticationRequest.getPassword();
+        String status = "";
+
+        Customer customer = customerService.findOneByUsername(username);
+        System.out.println(customer);
+        if (customer != null) {
+            try {
+                String encryptedPassword = crypto.encrypt(password);
+                customer = customerService.findOneByUsernameAndPassword(username, encryptedPassword);
+                if (customer == null) {
+                    status = "Sai mật khẩu";
+                } else {
+                    try {
+                        authenticate(username, password);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    final String token = jwtTokenUtil.generateToken(customer);
+                    return ResponseEntity.ok(new JwtResponse(token));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            status = "Người dùng không hợp lệ.";
         }
 
-        final Customer customer = customerService.findOneByUsername(authenticationRequest.getUsername());
-
-        final String token = jwtTokenUtil.generateToken(customer);
-
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(status);
     }
 
     private void authenticate(String username, String password) throws Exception {
