@@ -21,6 +21,8 @@ public class Manager {
     private String phone;
     private String gmail;
 
+    public Manager(){}
+
     public int getId() {
         return id;
     }

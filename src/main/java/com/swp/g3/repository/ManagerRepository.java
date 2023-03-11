@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface ManagerRepository extends JpaRepository<Manager, Integer> {
     public Manager findOneByUsername(String username);
     public Manager findOneByUsernameAndPassword(String username, String password);
+
 }
