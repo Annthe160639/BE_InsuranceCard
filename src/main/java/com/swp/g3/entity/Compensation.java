@@ -19,13 +19,31 @@ public class Compensation {
     @Nationalized
     private String accidentAddress;
     private Date accidentTime;
-    private float payment;
+    private Float payment;
     private int contractId;
     @Nationalized
     private String status = "Đang chờ xử lý.";
     private int customerId;
-    private int managerId;
-    private int staffId;
+
+    public void setManagerId(Integer managerId) {
+        this.managerId = managerId;
+    }
+
+    public Integer getManagerId() {
+        return managerId;
+    }
+
+    public Integer getStaffId() {
+        return staffId;
+    }
+
+    private Integer managerId;
+
+    public void setStaffId(Integer staffId) {
+        this.staffId = staffId;
+    }
+
+    private Integer staffId;
 
     public int getId() {
         return id;
@@ -59,11 +77,11 @@ public class Compensation {
         this.accidentTime = accidentTime;
     }
 
-    public float getPayment() {
+    public Float getPayment() {
         return payment;
     }
 
-    public void setPayment(float payment) {
+    public void setPayment(Float payment) {
         this.payment = payment;
     }
 
@@ -91,19 +109,5 @@ public class Compensation {
         this.customerId = customerId;
     }
 
-    public int getManagerId() {
-        return managerId;
-    }
 
-    public void setManagerId(int managerId) {
-        this.managerId = managerId;
-    }
-
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
-    }
 }

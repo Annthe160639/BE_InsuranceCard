@@ -32,5 +32,6 @@ public class InsuranceCardApplication {
 //		DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
 //		DatabasePopulatorUtils.execute(databasePopulator, dataSource);
 
-//		return dataSource;
+		return dataSource;
+	}
 }

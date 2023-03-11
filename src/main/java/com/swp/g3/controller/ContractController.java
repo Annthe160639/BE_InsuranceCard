@@ -1,11 +1,14 @@
 package com.swp.g3.controller;
 
 import com.swp.g3.entity.*;
+import com.swp.g3.repository.ContractRepository;
 import com.swp.g3.service.BuyerService;
 import com.swp.g3.service.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -68,9 +71,16 @@ public class ContractController {
         return contract;
     }
     //detele contract
-    @GetMapping(value = "/api/customer/contract/view/cancel/{id}")
-    public String delete(@PathVariable int id) {
-        contractRepository.deleteById(id);
-        return "cancel successfully";
+    @DeleteMapping(value = "/api/customer/contract/view/cancel/{id}")
+    public ResponseEntity<?> delete(@PathVariable int id, HttpSession session) {
+        Customer customer = (Customer)session.getAttribute("customer");
+        int customerId = customer.getId();
+        Contract contract = contractService.findOneByIdAndCustomerId(id, customerId);
+        if(contract != null){
+            contractRepository.deleteById(id);
+            return ResponseEntity.ok("Hủy yêu cầu hợp đồng thành công!");
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("badRequest");
     }
 }

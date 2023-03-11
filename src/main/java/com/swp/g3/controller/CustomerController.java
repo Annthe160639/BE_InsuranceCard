@@ -52,98 +52,78 @@ public class CustomerController {
     AuthenticationManager authenticationManager;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
     @PostMapping(value = "/api/customer/register")
-
     public boolean register(@Valid @RequestBody Customer customer) {
-
-//    @PostMapping(value = "/api/customer/register")
-//    public boolean register(@Valid @RequestBody Customer customer) {
-//        try {
-//            String encryptedPassword = crypto.encrypt(customer.getPassword());
-//            customer.setPassword(encryptedPassword);
-//            customerService.save(customer);
-//            emailService.sendVerifyEmail(customer.getGmail(), customer.getUsername(), customer.getName());
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-//
-//    @GetMapping(value = "/api/customer/username/duplicate/{username}")
-//    public boolean checkExistedUsername(@PathVariable String username) {
-//        return customerService.findOneByUsername(username) != null;
-//    }
-//
-//    @GetMapping(value = "/api/customer/gmail/duplicate/{gmail}")
-//    public boolean checkExistedEmail(@PathVariable String gmail) {
-//        return customerService.findOneByGmail(gmail) != null;
-//    }
-//
-//
-//    @PostMapping(value = "/api/customer/login")
-//    @ResponseBody
-//    public String login(HttpSession session,
-//                        @RequestBody(required = false) Customer customer){
-//        String username = customer.getUsername();
-//        String password = customer.getPassword();
-//        String status = "";
-//        Customer c = customerService.findOneByUsername(username);
-//        if (c != null) {
-//            if (c.isActive() == false) {
-//                status = "Tài khoản của bạn chưa được xác thực.";
-//            } else {
-//                try {
-//                    String encryptedPassword = crypto.encrypt(password);
-//                    c = customerService.findOneByUsernameAndPassword(username, encryptedPassword);
-//                    if (c == null) {
-//                        status = "Sai mật khẩu";
-//                    } else {
-//                        session.setAttribute("customer", c);
-//                        status = "Đăng nhập thành công.";
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    return "Mã hóa mật khẩu lỗi.";
-//                }
-//            }
-//        } else {
-//            status = "Người dùng không hợp lệ.";
-//        }
-//        return status;
-//    }
-//
-//    @GetMapping(value = "/api/customer/password/reset")
-//    public String resetPassword(@RequestParam(name = "username", required = true) String username) {
-//        Customer c = customerService.findOneByUsername(username);
-//
-//        if (c == null) return "Người dùng không hợp lệ.";
-//        else {
-//            try {
-//                emailService.sendResetPasswordEmail(c.getGmail(), c.getUsername(), c.getName());
-//                return "Hãy kiểm tra hòm thư của bạn để đặt lại mật khẩu.";
-//            } catch (MessagingException e) {
-//                e.printStackTrace();
-//                return "Người dùng không hợp lệ";
-//            }
-//        }
-//    }
-// change password
-    @PostMapping(value = "/api/customer/password/change")
-    public @ResponseBody String changepassword(@ModelAttribute("changepasswordForm") String password, HttpSession session){
-        Customer customer = (Customer) session.getAttribute("customer");
-
-
         try {
-            System.out.println(customer);
             String encryptedPassword = crypto.encrypt(customer.getPassword());
             customer.setPassword(encryptedPassword);
-            customerRepository.save(customer);
+            customerService.save(customer);
+            emailService.sendVerifyEmail(customer.getGmail(), customer.getUsername(), customer.getName());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+    @PostMapping(value = "/api/customer/login")
+    public String login(HttpSession session,
+                        @RequestBody(required = false) Customer customer){
+        String username = customer.getUsername();
+        String password = customer.getPassword();
+        String status = "";
+        Customer c = customerService.findOneByUsername(username);
+        if (c != null) {
+            if (c.isActive() == false) {
+                status = "Tài khoản của bạn chưa được xác thực.";
+            } else {
+                try {
+                    String encryptedPassword = crypto.encrypt(password);
+                    c = customerService.findOneByUsernameAndPassword(username, encryptedPassword);
+                    if (c == null) {
+                        status = "Sai mật khẩu";
+                    } else {
+                        session.setAttribute("customer", c);
+                        status = "Đăng nhập thành công.";
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "Mã hóa mật khẩu lỗi.";
+                }
+            }
+        } else {
+            status = "Người dùng không hợp lệ.";
+        }
+        return status;
+    }
+
+
+// change password
+    @PostMapping(value = "/api/customer/password/change")
+    public @ResponseBody String changepassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpSession session){
+        Customer customer = (Customer) session.getAttribute("customer");
+        try {
+            String encryptedPassword = crypto.encrypt(oldPassword);
+            if(encryptedPassword.equals(customer.getPassword())){
+                if (password.equals(password2)) {
+                    encryptedPassword = crypto.encrypt(password);
+                    customer.setPassword(encryptedPassword);
+                    customerRepository.save(customer);
+                    return "Thay đổi mật khẩu thành công!";
+                }else {
+                    return "Mật khẩu không khớp!";
+                }
+            }else {
+                return "Sai mật khẩu!";
+            }
         }catch (Exception e) {
             e.printStackTrace();
             return "Mã hóa mật khẩu lỗi.";
         }
-        return "Password Updated successfully";
     }
 
     @GetMapping(value = "/api/customer/username/duplicate/{username}")
@@ -157,35 +137,6 @@ public class CustomerController {
     }
 
 
-    @PostMapping(value = "/api/customer/login")
-    @ResponseBody
-    public String login(HttpSession session,
-                        @RequestBody(required = false) Customer customer,
-                        HttpServletResponse response){
-        String username = customer.getUsername();
-        String password = customer.getPassword();
-        Customer c = customerService.findOneByUsername(username);
-        if (c != null) {
-            if (c.isActive() == false) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            } else {
-                try {
-                    String encryptedPassword = crypto.encrypt(password);
-                    c = customerService.findOneByUsernameAndPassword(username, encryptedPassword);
-                    if (c == null) {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    } else {
-                        session.setAttribute("customer", c);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                }
-            }
-        }
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return "aaa";
-    }
 
     @GetMapping(value = "/api/customer/password/reset")
     public String resetPassword(@RequestParam(name = "username", required = true) String username) {

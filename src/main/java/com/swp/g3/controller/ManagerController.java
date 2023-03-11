@@ -60,7 +60,29 @@ public class ManagerController {
         Page<Customer> p = customerService.findCustomers(pageable);
         return p;
     }
-
+    @PostMapping(value = "/api/manager/login")
+    public String login(HttpSession session, @RequestParam String username, @NotNull String password) {
+        String status = "";
+        Manager manager = managerService.findOneByUsername(username);
+        if (manager != null) {
+            try {
+                String encryptedPassword = crypto.encrypt(password);
+                manager = managerService.findOneByUsernameAndPassword(username, password);
+                if (manager == null) {
+                    status = "Sai mật khẩu";
+                } else {
+                    session.setAttribute("manager", manager);
+                    status = "Đăng nhập thành công.";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Mã hóa mật khẩu lỗi.";
+            }
+        } else {
+            status = "Người dùng không hợp lệ.";
+        }
+        return status;
+    }
     @GetMapping("login")
     public String Login() {
         return "login";

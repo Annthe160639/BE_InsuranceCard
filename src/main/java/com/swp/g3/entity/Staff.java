@@ -13,9 +13,7 @@ public class Staff {
     private String username;
     private String password;
     private String role;
-    private String name;
-    private String phone;
-    private String gmail;
+
     private int managerId;
 
     public int getId() {

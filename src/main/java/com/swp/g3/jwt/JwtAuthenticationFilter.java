@@ -2,6 +2,7 @@ package com.swp.g3.jwt;
 
 import com.swp.g3.entity.Customer;
 import com.swp.g3.entity.CustomerDetails;
+import com.swp.g3.entity.Staff;
 import com.swp.g3.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             // Lấy jwt từ request
             Customer c = (Customer) request.getSession().getAttribute("customer");
+            Staff s = (Staff) request.getSession().getAttribute("staff");
+
             if (c != null) {
                 String username = c.getUsername();
                 CustomerDetails customerDetails = customerDetailsService.loadUserByUsername(username);
