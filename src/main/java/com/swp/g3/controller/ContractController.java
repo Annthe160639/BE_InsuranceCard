@@ -4,15 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.swp.g3.entity.*;
+import com.swp.g3.repository.ContractRepository;
 import com.swp.g3.service.BuyerService;
 import com.swp.g3.service.ContractService;
 import com.swp.g3.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.annotation.HttpConstraint;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -23,6 +25,8 @@ public class ContractController {
     ContractService contractService;
     @Autowired
     BuyerService buyerService;
+    @Autowired
+    ContractRepository contractRepository;
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
@@ -80,5 +84,18 @@ public class ContractController {
         contract.setStatus("Đã duyệt");
         contractService.save(contract);
         return contract;
+    }
+    //detele contract
+    @DeleteMapping(value = "/api/customer/contract/view/cancel/{id}")
+    public ResponseEntity<?> delete(@PathVariable int id, HttpSession session) {
+        Customer customer = (Customer)session.getAttribute("customer");
+        int customerId = customer.getId();
+        Contract contract = contractService.findOneByIdAndCustomerId(id, customerId);
+        if(contract != null){
+            contractRepository.deleteById(id);
+            return ResponseEntity.ok("Hủy yêu cầu hợp đồng thành công!");
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("badRequest");
     }
 }

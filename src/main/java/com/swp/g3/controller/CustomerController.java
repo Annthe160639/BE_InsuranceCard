@@ -1,7 +1,9 @@
 package com.swp.g3.controller;
 
 import com.swp.g3.entity.Customer;
-import com.swp.g3.entity.Staff;
+import com.swp.g3.entity.CustomerDetails;
+import com.swp.g3.jwt.JwtTokenProvider;
+import com.swp.g3.repository.CustomerRepository;
 import com.swp.g3.entity.jwt.JwtRequest;
 import com.swp.g3.entity.jwt.JwtResponse;
 import com.swp.g3.service.EmailService;
@@ -34,6 +36,10 @@ public class CustomerController {
     @Autowired
     EmailService emailService;
     @Autowired
+    CustomerRepository customerRepository;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -42,7 +48,6 @@ public class CustomerController {
     @PostMapping(value = "/api/customer/register")
     public boolean register(@Valid @RequestBody Customer customer) {
         try {
-            System.out.println(customer);
             String encryptedPassword = crypto.encrypt(customer.getPassword());
             customer.setPassword(encryptedPassword);
             customerService.save(customer);
@@ -51,6 +56,36 @@ public class CustomerController {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+
+
+
+    
+
+
+// change password
+    @PostMapping(value = "/api/customer/password/change")
+    public @ResponseBody String changepassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpSession session){
+        Customer customer = (Customer) session.getAttribute("customer");
+        try {
+            String encryptedPassword = crypto.encrypt(oldPassword);
+            if(encryptedPassword.equals(customer.getPassword())){
+                if (password.equals(password2)) {
+                    encryptedPassword = crypto.encrypt(password);
+                    customer.setPassword(encryptedPassword);
+                    customerRepository.save(customer);
+                    return "Thay đổi mật khẩu thành công!";
+                }else {
+                    return "Mật khẩu không khớp!";
+                }
+            }else {
+                return "Sai mật khẩu!";
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return "Mã hóa mật khẩu lỗi.";
         }
     }
 

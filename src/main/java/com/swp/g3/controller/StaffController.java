@@ -33,7 +33,6 @@ public class StaffController {
         if (staff != null) {
             try {
                 String encryptedPassword = crypto.encrypt(password);
-                System.out.println(encryptedPassword);
                 staff = staffService.findOneByUsernameAndPassword(username, password);
                 if (staff == null) {
                     status = "Sai mật khẩu";

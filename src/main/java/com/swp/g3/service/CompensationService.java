@@ -14,5 +14,13 @@ public class CompensationService {
     public List<Compensation> findAllByCustomerId(int id){
         return compensationRepository.findAllByCustomerId(id);
     }
-
+    public List<Compensation> findAllByStatus(String status){
+        return compensationRepository.findAllByStatus(status);
+    }
+    public List<Compensation> findAllByStaffId(int id){
+        return compensationRepository.findAllByStaffId(id);
+    }
+    public Compensation findOneById(int id){
+        return compensationRepository.findOneById(id);
+    }
 }
