@@ -1,5 +1,7 @@
 package com.swp.g3.entity;
 
+import org.hibernate.annotations.Nationalized;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +14,7 @@ public class Manager {
     private int id;
     private String username;
     private String password;
+    @Nationalized
     private String role;
 
     public Manager(){}
