@@ -23,4 +23,7 @@ public class CompensationService {
     public Compensation findOneById(int id){
         return compensationRepository.findOneById(id);
     }
+    public List<Compensation> findAll(){
+        return compensationRepository.findAll();
+    }
 }

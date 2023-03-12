@@ -14,4 +14,5 @@ public interface CompensationRepository extends JpaRepository<Compensation, Inte
 
     public List<Compensation> findAllByStaffId(int id);
     public Compensation findOneById(int id);
+    public List<Compensation> findAll();
 }

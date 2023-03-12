@@ -46,4 +46,8 @@ public class ContractService {
     public Contract findOneById(int id) {
         return contractRepository.findOneById(id);
     }
+    public List<Contract> findAll(){
+        return contractRepository.findAll();
+
+    }
 }

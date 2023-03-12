@@ -3,6 +3,7 @@ package com.swp.g3.controller;
 import com.swp.g3.entity.*;
 import com.swp.g3.repository.CustomerRepository;
 import com.swp.g3.repository.ManagerRepository;
+import com.swp.g3.service.CompensationService;
 import com.swp.g3.service.CustomerService;
 import com.swp.g3.service.ManagerService;
 import com.swp.g3.util.Crypto;
@@ -134,5 +135,15 @@ public class ManagerController {
         Object user1 = session.getAttribute("user");
         model.addAttribute("user", user);
         return "info";
+    }
+    @Autowired
+    CompensationService compensationService;
+    //approve compensation request
+    @PutMapping(value = "/api/manager/compensation/approve/{id}")
+    public Compensation approveCompensation(@PathVariable int id) {
+
+        Compensation compensation = compensationService.getOneById(id);
+        compensation.setStatus("Đã duyệt");
+        return compensation;
     }
 }

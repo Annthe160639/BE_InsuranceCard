@@ -97,5 +97,12 @@ public class ContractController {
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("badRequest");
+    @GetMapping("/api/contract/view")
+    public List<Contract> viewContract(){
+        return contractService.findAll();
+    }
+    @GetMapping(value = "/api/contract/view/detail/{id}")
+    public Contract viewContractById(@PathVariable int id){
+        return contractService.findOneById(id);
     }
 }
