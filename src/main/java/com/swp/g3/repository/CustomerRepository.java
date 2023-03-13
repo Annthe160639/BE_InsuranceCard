@@ -17,7 +17,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     Page<Customer> findCustomers(Pageable pageable);
 
     Customer findOneById(int id);
-}
 
     public Customer findOneById(Integer id);
 }
