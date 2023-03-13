@@ -18,3 +18,9 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     Customer findOneById(int id);
 }
+
+    public Customer findOneById(Integer id);
+}
+
+
+

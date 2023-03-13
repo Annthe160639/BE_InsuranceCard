@@ -30,6 +30,7 @@ public class CustomerService  {
         }
         return true;
     }
+    
     public Customer findOneByUsername(String username){
         Customer c = customerRepository.findOneByUsername(username);
         return c;
@@ -44,6 +45,9 @@ public class CustomerService  {
     }
     public Customer findOneByUsernameAndPassword(String username, String password){
         return customerRepository.findOneByUsernameAndPassword(username, password);
+    }
+    public Customer findOneById(Integer id){
+        return customerRepository.findOneById(id);
     }
 }
 

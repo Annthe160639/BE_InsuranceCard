@@ -1,6 +1,5 @@
 package com.swp.g3.entity;
 
-import org.hibernate.annotations.GeneratorType;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.Entity;
