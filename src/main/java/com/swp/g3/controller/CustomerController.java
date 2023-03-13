@@ -21,8 +21,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Validated
@@ -56,8 +58,8 @@ public class CustomerController {
 
 // change password
     @PostMapping(value = "/api/customer/password/change")
-    public @ResponseBody String changepassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpSession session){
-        Customer customer = (Customer) session.getAttribute("customer");
+    public @ResponseBody String changePassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpServletRequest request){
+        Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         try {
             String encryptedPassword = crypto.encrypt(oldPassword);
             if(encryptedPassword.equals(customer.getPassword())){
@@ -101,7 +103,9 @@ public class CustomerController {
         if (customer != null) {
             try {
                 String encryptedPassword = crypto.encrypt(password);
+                System.out.println(encryptedPassword);
                 customer = customerService.findOneByUsernameAndPassword(username, encryptedPassword);
+
                 if (customer == null) {
                     status = "Sai mật khẩu";
                 } else {
@@ -151,17 +155,34 @@ public class CustomerController {
     }
 
     //for all custommer
-    @GetMapping(value = "/api/customer/getAll")
-    public List<Customer> getAllCustomer() {
-        return customerService.getAllCustomers();
+//    @GetMapping(value = "/api/customer/getAll")
+//    public List<Customer> getAllCustomer() {
+//        return customerService.getAllCustomers();
+//    }
+
+    @GetMapping("/api/customer/profile")
+    public ResponseEntity<?> showCustomerInfo(HttpServletRequest request) {
+        Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
+        if(customer != null){
+            return ResponseEntity.ok(customer);
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+    }
+    @GetMapping(value = "api/staff/detail/{id}")
+    public Customer CustomerDetail(@PathVariable Integer id){
+        return customerService.findOneById(id);
     }
 
-    //for getting one pet with unique id
-    @GetMapping("/api/customer/getAll/{id}")
-    public Customer getCustomerById(@RequestBody int customerId) {
-        Customer customer = new Customer(customerService.getCustomerById(customerId));
-        return customer;
+    @PutMapping(value = "/api/customer/profile/edit")
+    public ResponseEntity<?> editProfile(@RequestBody Customer customer) {
+        customerService.save(customer);
+        return ResponseEntity.ok(customer);
     }
-
-
+    @GetMapping("/api/staff/customer/{id}")
+    private Customer getCustomerInfo(@PathVariable int id){
+        Customer c = customerService.findOneById(id);
+        System.out.println(c);
+        return c;
+    }
 }

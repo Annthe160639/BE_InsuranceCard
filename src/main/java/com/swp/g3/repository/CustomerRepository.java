@@ -17,11 +17,9 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     public Customer findOneByGmail(String gmail);
     public List<Customer> findAll();
 
-    public Customer findByID(int id);
     @Query("SELECT c FROM Customer c")
     Page<Customer> findCustomers(Pageable pageable);
 
-    Customer findOneById(int id);
 
     public Customer findOneById(Integer id);
 }

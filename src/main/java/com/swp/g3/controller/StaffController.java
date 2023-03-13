@@ -45,7 +45,7 @@ public class StaffController {
     JwtTokenUtil jwtTokenUtil;
     @Autowired
     AuthenticationManager authenticationManager;
-    @PutMapping(value = "/api/staff/contract/check/{id}")
+    @PutMapping(value = "/api/staff/contract/accept/{id}")
     public ResponseEntity<?> processNewContract(HttpServletRequest request, @PathVariable int id){
         Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
         Contract contract = contractService.findOneById(id);
@@ -79,7 +79,40 @@ public class StaffController {
         }
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
     }
+    @PutMapping(value = "/api/staff/compensation/reject/{id}")
+    public ResponseEntity<?> rejectCompensation(HttpServletRequest request, @PathVariable int id){
+        Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
+        Compensation compensation = compensationService.findOneById(id);
 
+        if(compensation == null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Đã duyệt"))
+        {
+            compensation.setStaffId(staff.getId());
+            compensation.setStatus("Đã từ chối");
+            compensationService.save(compensation);
+            return ResponseEntity.ok(compensation);
+        }
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+    }
+    @PutMapping(value = "/api/staff/compensation/accept/{id}")
+    public ResponseEntity<?> acceptCompensation(HttpServletRequest request, @PathVariable int id){
+        Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
+        Compensation compensation = compensationService.findOneById(id);
+
+        if(compensation == null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Đã duyệt"))
+        {
+            compensation.setStaffId(staff.getId());
+            compensation.setStatus("Đã duyệt");
+            compensationService.save(compensation);
+            return ResponseEntity.ok(compensation);
+        }
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+    }
 
     @PostMapping(value = "/api/staff/login")
     @ResponseBody
@@ -124,4 +157,5 @@ public class StaffController {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
+
 }

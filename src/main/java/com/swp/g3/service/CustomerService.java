@@ -34,8 +34,7 @@ public class CustomerService  {
     }
     
     public Customer findOneByUsername(String username){
-        Customer c = customerRepository.findOneByUsername(username);
-        return c;
+        return customerRepository.findOneByUsername(username);
     }
     public Customer findOneByGmail(String gmail){
         Customer c = customerRepository.findOneByGmail(gmail);
@@ -56,15 +55,7 @@ public class CustomerService  {
         return customerRepository.findAll();
     }
 
-    public Customer getCustomerById(int customerId) {
-        Customer customer = customerRepository.findByID(customerId);
-        if (customer.isActive()) {
-            return customer;
-        }
-        else {
-            return null;
-        }
-    }
+
 
 }
 
