@@ -55,54 +55,56 @@ public class ContractController {
     }
 
     @GetMapping(value = "/api/customer/contract/{id}")
-    public Contract viewContractDetail(HttpSession session, @PathVariable int id) {
-        Customer customer = (Customer) session.getAttribute("customer");
+    public ResponseEntity<?> viewContractDetails(@PathVariable int id, HttpServletRequest request){
+        Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         int customerId = customer.getId();
         Contract contract = contractService.findOneByIdAndCustomerId(id, customerId);
-        return contract;
+        if(contract != null) {
+            return ResponseEntity.ok(contract);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
     }
-
     @GetMapping(value = "/api/staff/contract/list")
     public List<Contract> viewContractList() {
         List<Contract> contractList = contractService.findAllByStatus("Ðang chờ xử lý");
         return contractList;
     }
 
-    @GetMapping(value = "/api/staff/contract/history")
-    public List<Contract> viewContractHistory(HttpSession session) {
-        Staff staff = (Staff) session.getAttribute("staff");
+    @GetMapping(value = "/api/staff/contract")
+    public List<Contract> viewContractHistory(HttpServletRequest request) {
+        Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
         int staffId = staff.getId();
         List<Contract> contractList = contractService.findAllByStaffId(staffId);
         return contractList;
     }
 
     @PutMapping(value = "/api/manager/contract/approve/{id}")
-    public Contract approveNewContract(HttpSession session, @PathVariable int id) {
-        Manager manager = (Manager) session.getAttribute("manager");
+    public ResponseEntity<?> approveNewContract(HttpServletRequest request, @PathVariable int id) {
+        Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
         Contract contract = contractService.findOneById(id);
-        contract.setManagerId(manager.getId());
-        contract.setStatus("Đã duyệt");
-        contractService.save(contract);
-        return contract;
+        if(contract.getStatus().equals("Đang xử lý")){
+            contract.setManagerId(manager.getId());
+            contract.setStatus("Đã duyệt");
+            contractService.save(contract);
+            return ResponseEntity.ok(contract);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+
     }
     //detele contract
-    @DeleteMapping(value = "/api/customer/contract/view/cancel/{id}")
-    public ResponseEntity<?> delete(@PathVariable int id, HttpSession session) {
-        Customer customer = (Customer)session.getAttribute("customer");
+    @DeleteMapping(value = "/api/customer/contract/cancel/{id}")
+    public ResponseEntity<?> delete(@PathVariable int id, HttpServletRequest request) {
+        Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         int customerId = customer.getId();
         Contract contract = contractService.findOneByIdAndCustomerId(id, customerId);
         if(contract != null){
-            contractRepository.deleteById(id);
+            contract.setStatus("Đã hủy");
+            contractRepository.save(contract);
             return ResponseEntity.ok("Hủy yêu cầu hợp đồng thành công!");
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("badRequest");
-    @GetMapping("/api/contract/view")
-    public List<Contract> viewContract(){
-        return contractService.findAll();
     }
-    @GetMapping(value = "/api/contract/view/detail/{id}")
-    public Contract viewContractById(@PathVariable int id){
-        return contractService.findOneById(id);
-    }
+
 }

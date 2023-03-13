@@ -2,14 +2,13 @@ package com.swp.g3.config;
 
 import com.swp.g3.filter.JwtAuthenticationEntryPoint;
 import com.swp.g3.filter.JwtRequestFilter;
-import com.swp.g3.service.CustomerService;
+import com.swp.g3.service.JwtManagerDetailsService;
+import com.swp.g3.service.JwtStaffDetailsService;
+import com.swp.g3.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.annotation.SecurityBuilder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,14 +33,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    private UserDetailsService jwtUserDetailsService;
-
+    private JwtUserDetailsService jwtUserDetailsService;
+    @Autowired
+    private JwtStaffDetailsService jwtStaffDetailsService;
+    @Autowired
+    private JwtManagerDetailsService jwtManagerDetailsService;
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(jwtStaffDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(jwtManagerDetailsService).passwordEncoder(passwordEncoder());
     }
     @Bean()
     public PasswordEncoder passwordEncoder() {
@@ -63,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/manager/login").permitAll()
                 .and().authorizeRequests().antMatchers("/api/customer/verify/*").permitAll()
                 .and().authorizeRequests().antMatchers("/api/customer/register").permitAll()
-                .and().authorizeRequests().antMatchers("/api/contract/type/detail/*").permitAll()
+
                 .and().authorizeRequests().antMatchers("/api/manager/*").hasAuthority("manager")
                 .and().authorizeRequests().antMatchers("/api/staff/*").hasAuthority("staff")
                 .and().authorizeRequests().antMatchers("/api/customer/**").hasAuthority("customer")

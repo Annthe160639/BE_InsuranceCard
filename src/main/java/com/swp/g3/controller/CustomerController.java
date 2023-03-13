@@ -54,12 +54,6 @@ public class CustomerController {
         }
     }
 
-
-
-
-    
-
-
 // change password
     @PostMapping(value = "/api/customer/password/change")
     public @ResponseBody String changepassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpSession session){

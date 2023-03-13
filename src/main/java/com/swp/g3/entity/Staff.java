@@ -14,7 +14,7 @@ public class Staff {
     private int id;
     private String username;
     private String password;
-    private String role;
+    private String role = "staff";
     private int managerId;
 
     public int getId() {

@@ -4,17 +4,28 @@ import com.swp.g3.entity.*;
 import com.swp.g3.entity.Customer;
 import com.swp.g3.entity.Manager;
 import com.swp.g3.entity.Staff;
+import com.swp.g3.entity.jwt.JwtRequest;
+import com.swp.g3.entity.jwt.JwtResponse;
 import com.swp.g3.service.StaffService;
 import com.swp.g3.util.Crypto;
 import com.swp.g3.service.CompensationService;
 import com.swp.g3.service.ContractService;
+import com.swp.g3.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
@@ -30,44 +41,87 @@ public class StaffController {
     ContractService contractService;
     @Autowired
     CompensationService compensationService;
-    @PutMapping(value = "/api/staff/contract/process/{id}")
-    public Contract processNewContract(HttpSession session, @PathVariable int id){
-        Staff staff = (Staff) session.getAttribute("staff");
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @PutMapping(value = "/api/staff/contract/check/{id}")
+    public ResponseEntity<?> processNewContract(HttpServletRequest request, @PathVariable int id){
+        Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
         Contract contract = contractService.findOneById(id);
-        contract.setStaffId(staff.getId());
-        contract.setStatus("Đang xử lý");
-        return contract;
-    }
+        if(contract == null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Đã duyệt"))
+        {
+            contract.setStaffId(staff.getId());
+            contract.setStatus("Đang xử lý");
+            contractService.save(contract);
+            return ResponseEntity.ok(contract);
+        }
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
 
-    @PutMapping(value = "/api/staff/compensation/check/{id}")
-    public Compensation checkCompensation(@PathVariable int id){
-        Compensation compensation = compensationService.getOneById(id);
-        compensation.setStatus("Đã kiểm tra");
-        return compensation;
+    }
+    @PutMapping(value = "/api/staff/contract/reject/{id}")
+    public ResponseEntity<?> rejectNewContract(HttpServletRequest request, @PathVariable int id){
+        Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
+        Contract contract = contractService.findOneById(id);
+
+        if(contract == null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Đã duyệt"))
+        {
+            contract.setStaffId(staff.getId());
+            contract.setStatus("Đã từ chối");
+            contractService.save(contract);
+            return ResponseEntity.ok(contract);
+        }
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
     }
 
 
     @PostMapping(value = "/api/staff/login")
-    public String login(HttpSession session, @RequestParam String username, @NotNull String password) {
+    @ResponseBody
+    public ResponseEntity login(@RequestBody JwtRequest authenticationRequest) {
+        String username = authenticationRequest.getUsername();
+        String password = authenticationRequest.getPassword();
         String status = "";
+
         Staff staff = staffService.findOneByUsername(username);
         if (staff != null) {
             try {
                 String encryptedPassword = crypto.encrypt(password);
-                staff = staffService.findOneByUsernameAndPassword(username, password);
+                staff = staffService.findOneByUsernameAndPassword(username, encryptedPassword);
                 if (staff == null) {
                     status = "Sai mật khẩu";
                 } else {
-                    session.setAttribute("staff", staff);
-                    status = "Đăng nhập thành công.";
+                    try {
+                        authenticate(username, password);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    final String token = jwtTokenUtil.generateToken(staff);
+                    return ResponseEntity.ok(new JwtResponse(token));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Mã hóa mật khẩu lỗi.";
             }
         } else {
             status = "Người dùng không hợp lệ.";
         }
-        return status;
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(status);
+    }
+
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
     }
 }

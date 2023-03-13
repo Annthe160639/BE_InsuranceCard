@@ -1,12 +1,15 @@
 package com.swp.g3.controller;
 
 import com.swp.g3.entity.*;
+import com.swp.g3.entity.jwt.JwtRequest;
+import com.swp.g3.entity.jwt.JwtResponse;
 import com.swp.g3.repository.CustomerRepository;
 import com.swp.g3.repository.ManagerRepository;
 import com.swp.g3.service.CompensationService;
 import com.swp.g3.service.CustomerService;
 import com.swp.g3.service.ManagerService;
 import com.swp.g3.util.Crypto;
+import com.swp.g3.util.JwtTokenUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +18,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.ui.Model;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -40,13 +48,17 @@ public class ManagerController {
     ManagerRepository managerRepository;
     @Autowired
     CustomerService customerService;
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    AuthenticationManager authenticationManager;
     @GetMapping(value = "/api/manager/customer/list")
-    public Page<Customer> listCustomer(HttpSession session,
+    public Page<Customer> listCustomer(HttpServletRequest request,
                                        @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
                                        @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
                                        @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
 
-        Manager manager = (Manager) session.getAttribute("manager");
+        Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
         if (manager == null) {
             return null;
         }
@@ -62,27 +74,46 @@ public class ManagerController {
         return p;
     }
     @PostMapping(value = "/api/manager/login")
-    public String login(HttpSession session, @RequestParam String username, @NotNull String password) {
+    @ResponseBody
+    public ResponseEntity login(@RequestBody JwtRequest authenticationRequest) {
+        String username = authenticationRequest.getUsername();
+        String password = authenticationRequest.getPassword();
         String status = "";
+
         Manager manager = managerService.findOneByUsername(username);
         if (manager != null) {
             try {
                 String encryptedPassword = crypto.encrypt(password);
-                manager = managerService.findOneByUsernameAndPassword(username, password);
+                manager = managerService.findOneByUsernameAndPassword(username, encryptedPassword);
                 if (manager == null) {
                     status = "Sai mật khẩu";
                 } else {
-                    session.setAttribute("manager", manager);
-                    status = "Đăng nhập thành công.";
+                    try {
+                        authenticate(username, password);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    final String token = jwtTokenUtil.generateToken(manager);
+                    return ResponseEntity.ok(new JwtResponse(token));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Mã hóa mật khẩu lỗi.";
             }
         } else {
             status = "Người dùng không hợp lệ.";
         }
-        return status;
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(status);
+    }
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
     }
     @GetMapping("login")
     public String Login() {
@@ -140,10 +171,21 @@ public class ManagerController {
     CompensationService compensationService;
     //approve compensation request
     @PutMapping(value = "/api/manager/compensation/approve/{id}")
-    public Compensation approveCompensation(@PathVariable int id) {
+    public ResponseEntity<?> approveCompensation(@PathVariable int id, HttpServletRequest request) {
+        Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+        Compensation compensation = compensationService.findOneById(id);
+        if(compensation == null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
 
-        Compensation compensation = compensationService.getOneById(id);
-        compensation.setStatus("Đã duyệt");
-        return compensation;
+        else if(compensation.getStatus().equals("Đang xử lý"))
+        {
+            compensation.setManagerId(manager.getId());
+            compensation.setStatus("Đã duyệt");
+            compensationService.save(compensation);
+            return ResponseEntity.ok(compensation);
+        }
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
     }
+
 }

@@ -7,7 +7,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.swp.g3.entity.Customer;
+import com.swp.g3.entity.Manager;
+import com.swp.g3.entity.Staff;
 import com.swp.g3.service.CustomerService;
+import com.swp.g3.service.ManagerService;
+import com.swp.g3.service.StaffService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +35,10 @@ public class JwtTokenUtil implements Serializable {
     private String secret;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private StaffService staffService;
+    @Autowired
+    private ManagerService managerService;
     public Customer getCustomerFromRequestToken(HttpServletRequest request){
         final String requestTokenHeader = request.getHeader("Authorization");
 
@@ -52,9 +60,55 @@ public class JwtTokenUtil implements Serializable {
         return null;
     }
 
+    public Staff getStaffFromRequestToken(HttpServletRequest request){
+        final String requestTokenHeader = request.getHeader("Authorization");
+
+        String username = null;
+        String jwtToken = null;
+        // JWT Token is in the form "Bearer token". Remove Bearer word and get
+        // only the Token
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            jwtToken = requestTokenHeader.substring(7);
+            try {
+                username = getUsernameFromToken(jwtToken);
+                return staffService.findOneByUsername(username);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Unable to get JWT Token");
+            } catch (ExpiredJwtException e) {
+                System.out.println("JWT Token has expired");
+            }
+        }
+        return null;
+    }
+
+    public Manager getManagerFromRequestToken(HttpServletRequest request){
+        final String requestTokenHeader = request.getHeader("Authorization");
+
+        String username = null;
+        String jwtToken = null;
+        // JWT Token is in the form "Bearer token". Remove Bearer word and get
+        // only the Token
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            jwtToken = requestTokenHeader.substring(7);
+            try {
+                username = getUsernameFromToken(jwtToken);
+                return managerService.findOneByUsername(username);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Unable to get JWT Token");
+            } catch (ExpiredJwtException e) {
+                System.out.println("JWT Token has expired");
+            }
+        }
+        return null;
+    }
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    public String getUserRoleFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return claims.get("role").toString();
     }
 
     //retrieve expiration date from jwt token
@@ -89,6 +143,20 @@ public class JwtTokenUtil implements Serializable {
         claims.put("role", customer.getRole());
         claims.put("username", customer.getUsername());
         return doGenerateToken(claims, customer.getUsername());
+    }
+    public String generateToken(Staff staff) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", staff.getId());
+        claims.put("role", staff.getRole());
+        claims.put("username", staff.getUsername());
+        return doGenerateToken(claims, staff.getUsername());
+    }
+    public String generateToken(Manager manager) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", manager.getId());
+        claims.put("role", manager.getRole());
+        claims.put("username", manager.getUsername());
+        return doGenerateToken(claims, manager.getUsername());
     }
     private String doGenerateToken(Map<String, Object> claims, String subject) {
 

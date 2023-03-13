@@ -11,6 +11,8 @@ import java.util.List;
 public class CompensationService {
     @Autowired
     CompensationRepository compensationRepository;
+
+    public Compensation save (Compensation compensation){ return compensationRepository.save(compensation);}
     public List<Compensation> findAllByCustomerId(int id){
         return compensationRepository.findAllByCustomerId(id);
     }
@@ -25,5 +27,8 @@ public class CompensationService {
     }
     public List<Compensation> findAll(){
         return compensationRepository.findAll();
+    }
+    public List<Compensation> findAllByManagerId(int id){
+        return compensationRepository.findAllByManagerId(id);
     }
 }

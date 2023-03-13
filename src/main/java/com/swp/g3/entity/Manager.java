@@ -17,7 +17,6 @@ public class Manager {
     @Nationalized
     private String role;
 
-    public Manager(){}
 
     public Manager(){}
 

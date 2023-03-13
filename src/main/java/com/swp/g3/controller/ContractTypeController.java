@@ -28,7 +28,7 @@ public class ContractTypeController {
         return contractTypeService.findOneById(id);
     }
     @PostMapping ("/api/manager/contract/type/edit")
-    public ContractType editcontracttype (@RequestBody ContractType contractType, HttpSession session) {
+    public ContractType editContractType (@RequestBody ContractType contractType, HttpSession session) {
         Manager manager = (Manager) session.getAttribute("manager");
         ContractType contrType = contractTypeService.findOneById(contractType.getId());
         contrType.setName(contractType.getName());

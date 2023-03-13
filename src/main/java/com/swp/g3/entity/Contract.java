@@ -19,8 +19,8 @@ public class Contract {
     private Date endDate;
     @Nationalized
     private String status = "Đang chờ xử lý.";
-    private int managerId;
-    private int staffId;
+    private Integer managerId;
+    private Integer staffId;
     private int customerId;
     private int buyerId;
     @Transient
@@ -80,19 +80,19 @@ public class Contract {
         this.status = status;
     }
 
-    public int getManagerId() {
+    public Integer getManagerId() {
         return managerId;
     }
 
-    public void setManagerId(int managerId) {
+    public void setManagerId(Integer managerId) {
         this.managerId = managerId;
     }
 
-    public int getStaffId() {
+    public Integer getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(int staffId) {
+    public void setStaffId(Integer staffId) {
         this.staffId = staffId;
     }
 

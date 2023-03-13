@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.swp.g3.service.JwtManagerDetailsService;
+import com.swp.g3.service.JwtStaffDetailsService;
 import com.swp.g3.service.JwtUserDetailsService;
 import com.swp.g3.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;
-
+    @Autowired
+    private JwtStaffDetailsService jwtStaffDetailsService;
+    @Autowired
+    private JwtManagerDetailsService jwtManagerDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
@@ -54,8 +59,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            String role = jwtTokenUtil.getUserRoleFromToken(jwtToken);
+            UserDetails userDetails = null;
+            if (role.compareTo("customer") == 0){
+                userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+            } else if (role.compareTo("staff") == 0){
+                userDetails = this.jwtStaffDetailsService.loadUserByUsername(username);
+            } else if (role.compareTo("manager") == 0){
+                userDetails = this.jwtManagerDetailsService.loadUserByUsername(username);
+            }
 
-            UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 
             // if token is valid configure Spring Security to manually set
             // authentication
