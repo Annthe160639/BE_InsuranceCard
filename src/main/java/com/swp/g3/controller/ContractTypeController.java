@@ -44,7 +44,7 @@ public class ContractTypeController {
         contractType.setManagerId(manager.getId());
         return contractTypeService.save(contractType);
     }
-    @PostMapping(value = "/api/manager/contract/type/delete/{id}")
+    @DeleteMapping(value = "/api/manager/contract/type/delete/{id}")
     public ResponseEntity<?> deleteContractType(@PathVariable int id){
         if(contractTypeService.findOneById(id) == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
