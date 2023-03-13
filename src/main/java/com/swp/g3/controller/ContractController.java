@@ -48,7 +48,7 @@ public class ContractController {
         }
     }
 
-    @GetMapping(value = "/api/customer/contract/history")
+    @GetMapping(value = "/api/customer/contract")
     public List<Contract> loadContractList(HttpServletRequest request) {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         return contractService.findAllByCustomerId(customer.getId());
@@ -77,6 +77,15 @@ public class ContractController {
         int staffId = staff.getId();
         List<Contract> contractList = contractService.findAllByStaffId(staffId);
         return contractList;
+    }
+    @GetMapping(value = "/api/staff/contract/{id}")
+    public ResponseEntity<?> viewContract(HttpServletRequest request, @PathVariable int id) {
+        Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
+        Contract c = contractService.findOneByIdAndStaffId(id, staff.getId());
+        if(c == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+        return ResponseEntity.ok(c);
     }
 
     @PutMapping(value = "/api/manager/contract/approve/{id}")

@@ -42,6 +42,9 @@ public class ContractService {
     public List<Contract> findAllByStaffIdAndStatus(int id, String status) {
         return contractRepository.findAllByStaffIdAndStatus(id, status);
     }
+    public Contract findOneByIdAndStaffId(int id, int staffId){
+        return contractRepository.findOneByIdAndStaffId(id, staffId);
+    }
 
     public Contract findOneById(int id) {
         return contractRepository.findOneById(id);

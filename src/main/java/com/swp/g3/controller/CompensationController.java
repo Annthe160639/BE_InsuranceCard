@@ -1,9 +1,9 @@
 package com.swp.g3.controller;
 
-import com.swp.g3.entity.Compensation;
-import com.swp.g3.entity.Customer;
-import com.swp.g3.entity.Manager;
-import com.swp.g3.entity.Staff;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.swp.g3.entity.*;
 import com.swp.g3.repository.CompensationRepository;
 import com.swp.g3.service.CompensationService;
 import com.swp.g3.util.JwtTokenUtil;
@@ -24,7 +24,7 @@ public class CompensationController {
     CompensationService compensationService;
     @Autowired
     JwtTokenUtil jwtTokenUtil;
-    @GetMapping (value = "/api/customer/compensation/list")
+    @GetMapping (value = "/api/customer/compensation")
     public List<Compensation> viewAll(HttpServletRequest request){
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         if(customer == null){
@@ -38,6 +38,15 @@ public class CompensationController {
     public List<Compensation> showCompensationHistory(HttpServletRequest request){
         Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
         return compensationService.findAllByStaffId(staff.getId());
+    }
+    @GetMapping(value = "/api/staff/compensation/{id}")
+    public ResponseEntity<?> viewCompensation(HttpServletRequest request, @PathVariable int id) {
+        Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
+        Compensation c = compensationService.findOneByIdAndStaffId(id, staff.getId());
+        if(c == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+        return ResponseEntity.ok(c);
     }
     @GetMapping ("/api/staff/compensation/list")
     public List<Compensation> showCompensationList(){
@@ -83,6 +92,17 @@ public class CompensationController {
         }
         return ResponseEntity.ok(compensation);
     }
-
+    @PostMapping(value = "/api/customer/compensation/request")
+    public ResponseEntity<?> save(@RequestBody ObjectNode json, HttpServletRequest request) {
+        try {
+            Compensation compensation = new ObjectMapper().treeToValue(json, Compensation.class);
+            Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
+            compensation.setCustomerId(customer.getId());
+            compensationService.save(compensation);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

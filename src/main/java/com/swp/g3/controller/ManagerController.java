@@ -73,6 +73,13 @@ public class ManagerController {
         Page<Customer> p = customerService.findCustomers(pageable);
         return p;
     }
+    @PutMapping("/api/manager/customer/edit")
+    public ResponseEntity editCustomer(@RequestBody Customer customer, HttpServletRequest request){
+        Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+        customer.setManagerId(manager.getId());
+        customerService.save(customer);
+        return ResponseEntity.ok(customer);
+    }
     @PostMapping(value = "/api/manager/login")
     @ResponseBody
     public ResponseEntity login(@RequestBody JwtRequest authenticationRequest) {
@@ -166,6 +173,12 @@ public class ManagerController {
         Object user1 = session.getAttribute("user");
         model.addAttribute("user", user);
         return "info";
+    }
+    @GetMapping("/api/manager/customer/{id}")
+    private ResponseEntity<?> getCustomerInfo(@PathVariable int id){
+        Customer c = customerService.findOneById(id);
+        if(c == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        return ResponseEntity.ok(c);
     }
     @Autowired
     CompensationService compensationService;

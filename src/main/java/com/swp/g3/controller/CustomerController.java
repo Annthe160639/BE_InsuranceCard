@@ -180,9 +180,10 @@ public class CustomerController {
         return ResponseEntity.ok(customer);
     }
     @GetMapping("/api/staff/customer/{id}")
-    private Customer getCustomerInfo(@PathVariable int id){
+    private ResponseEntity<?> getCustomerInfo(@PathVariable int id){
         Customer c = customerService.findOneById(id);
-        System.out.println(c);
-        return c;
+        if(c == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        return ResponseEntity.ok(c);
     }
+
 }
