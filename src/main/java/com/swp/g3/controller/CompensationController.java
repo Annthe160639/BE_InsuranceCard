@@ -52,15 +52,7 @@ public class CompensationController {
     public List<Compensation> showCompensationList(){
         return compensationService.findAllByStatus("Đang chờ xử lý");
     }
-    @GetMapping(value = "/api/staff/compensation/{id}")
-    public Compensation showCompensationDetail(@PathVariable int id, HttpServletRequest request){
-        Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
-        Compensation compensation =  compensationService.findOneById(id);
-        if(compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()){
-            return compensation;
-        }
-        return null;
-    }
+
     @GetMapping(value = "/api/manager/compensation/{id}")
     public Compensation showCompensation(@PathVariable int id, HttpServletRequest request){
         Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
