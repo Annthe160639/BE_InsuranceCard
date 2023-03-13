@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CustomerService  {
     @Autowired
@@ -23,7 +25,7 @@ public class CustomerService  {
 
     public boolean save(Customer newCustomer){
         try{
-            customerRepository.save(newCustomer);
+            customerRepository.save(newCustomer);//insert | save
         }catch (Exception e){
             e.printStackTrace();
             return false;
@@ -49,5 +51,20 @@ public class CustomerService  {
     public Customer findOneById(Integer id){
         return customerRepository.findOneById(id);
     }
+
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
+
+    public Customer getCustomerById(int customerId) {
+        Customer customer = customerRepository.findByID(customerId);
+        if (customer.isActive()) {
+            return customer;
+        }
+        else {
+            return null;
+        }
+    }
+
 }
 

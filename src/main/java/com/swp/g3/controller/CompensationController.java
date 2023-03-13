@@ -86,4 +86,14 @@ public class CompensationController {
         }
         return ResponseEntity.ok(compensation);
     }
+public class CompensationController {
+
+    CompensationRepository compensationRepository;
+    @RequestMapping(value = "/requestCompensation", method = RequestMethod.POST)
+    public String sendRequestCompensationPage(@RequestBody Compensation compensation) {
+
+        compensationRepository.save(compensation);
+
+        return "requestCompensation";
+    }
 }
