@@ -7,14 +7,17 @@ import com.swp.g3.entity.*;
 import com.swp.g3.repository.ContractRepository;
 import com.swp.g3.service.BuyerService;
 import com.swp.g3.service.ContractService;
+import com.swp.g3.service.ContractTypeService;
 import com.swp.g3.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.annotation.HttpConstraint;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpRequest;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -27,6 +30,8 @@ public class ContractController {
     BuyerService buyerService;
     @Autowired
     ContractRepository contractRepository;
+    @Autowired
+    ContractTypeService contractTypeService;
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
@@ -55,16 +60,19 @@ public class ContractController {
     }
 
     @GetMapping(value = "/api/customer/contract/{id}")
-    public ResponseEntity<?> viewContractDetails(@PathVariable int id, HttpServletRequest request){
+    public ResponseEntity<?> viewContractDetails(@PathVariable int id, HttpServletRequest request) {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         int customerId = customer.getId();
         Contract contract = contractService.findOneByIdAndCustomerId(id, customerId);
-        if(contract != null) {
+        if (contract != null) {
+            contract.setBuyer(buyerService.findBuyerByid(contract.getBuyerId()));
+            contract.setContractType(contractTypeService.findOneById(contract.getTypeId()));
             return ResponseEntity.ok(contract);
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
     }
+
     @GetMapping(value = "/api/staff/contract/list")
     public List<Contract> viewContractList() {
         List<Contract> contractList = contractService.findAllByStatus("Ðang chờ xử lý");
@@ -78,11 +86,12 @@ public class ContractController {
         List<Contract> contractList = contractService.findAllByStaffId(staffId);
         return contractList;
     }
+
     @GetMapping(value = "/api/staff/contract/{id}")
     public ResponseEntity<?> viewContract(HttpServletRequest request, @PathVariable int id) {
         Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
         Contract c = contractService.findOneByIdAndStaffId(id, staff.getId());
-        if(c == null){
+        if (c == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
         return ResponseEntity.ok(c);
@@ -92,7 +101,7 @@ public class ContractController {
     public ResponseEntity<?> approveNewContract(HttpServletRequest request, @PathVariable int id) {
         Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
         Contract contract = contractService.findOneById(id);
-        if(contract.getStatus().equals("Đang xử lý")){
+        if (contract.getStatus().equals("Đang xử lý")) {
             contract.setManagerId(manager.getId());
             contract.setStatus("Đã duyệt");
             contractService.save(contract);
@@ -101,13 +110,14 @@ public class ContractController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
 
     }
+
     //detele contract
     @DeleteMapping(value = "/api/customer/contract/cancel/{id}")
     public ResponseEntity<?> delete(@PathVariable int id, HttpServletRequest request) {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         int customerId = customer.getId();
         Contract contract = contractService.findOneByIdAndCustomerId(id, customerId);
-        if(contract != null){
+        if (contract != null) {
             contract.setStatus("Đã hủy");
             contractRepository.save(contract);
             return ResponseEntity.ok("Hủy yêu cầu hợp đồng thành công!");
