@@ -39,8 +39,8 @@ public class ContractTypeController {
         return contractType;
     }
     @PostMapping(value = "/api/manager/contract/type/add")
-    public ContractType addContractType(@RequestBody ContractType contractType, HttpSession session){
-        Manager manager = (Manager) session.getAttribute("manager");
+    public ContractType addContractType(@RequestBody ContractType contractType, HttpServletRequest request){
+        Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
         contractType.setManagerId(manager.getId());
         return contractTypeService.save(contractType);
     }
