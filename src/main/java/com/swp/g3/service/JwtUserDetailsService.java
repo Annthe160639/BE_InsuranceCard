@@ -29,6 +29,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer c = customerRepository.findOneByUsername(username);
+        System.out.println(c);
         if (c != null) {
             try {
                 return new User(c.getUsername(), new BCryptPasswordEncoder().encode(crypto.decrypt(c.getPassword())),
