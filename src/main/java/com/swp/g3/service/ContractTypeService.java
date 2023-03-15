@@ -22,5 +22,7 @@ public class ContractTypeService {
     public ContractType save(ContractType contractType){
         return contractTypeRepository.save(contractType);
     }
-
+    public void deleteById(int id){
+        contractTypeRepository.deleteById(id);
+    }
 }

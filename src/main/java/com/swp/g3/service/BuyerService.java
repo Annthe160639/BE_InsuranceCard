@@ -9,7 +9,12 @@ import org.springframework.stereotype.Service;
 public class BuyerService {
     @Autowired
     BuyerRepository buyerRepository;
-    public Buyer save(Buyer buyer){
+
+    public Buyer save(Buyer buyer) {
         return buyerRepository.save(buyer);
+    }
+
+    public Buyer findBuyerByid(int id) {
+        return buyerRepository.findOneById(id);
     }
 }

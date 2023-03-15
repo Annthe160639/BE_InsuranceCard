@@ -1,7 +1,6 @@
 package com.swp.g3.service;
 
 import com.swp.g3.entity.Customer;
-import com.swp.g3.entity.CustomerDetails;
 import com.swp.g3.repository.CustomerRepository;
 import com.swp.g3.repository.ManagerRepository;
 import com.swp.g3.repository.StaffRepository;
@@ -13,8 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-public class CustomerService implements UserDetailsService {
+public class CustomerService  {
     @Autowired
     CustomerRepository customerRepository;
     @Autowired
@@ -24,16 +25,16 @@ public class CustomerService implements UserDetailsService {
 
     public boolean save(Customer newCustomer){
         try{
-            customerRepository.save(newCustomer);
+            customerRepository.save(newCustomer);//insert | save
         }catch (Exception e){
             e.printStackTrace();
             return false;
         }
         return true;
     }
+    
     public Customer findOneByUsername(String username){
-        Customer c = customerRepository.findOneByUsername(username);
-        return c;
+        return customerRepository.findOneByUsername(username);
     }
     public Customer findOneByGmail(String gmail){
         Customer c = customerRepository.findOneByGmail(gmail);
@@ -46,14 +47,15 @@ public class CustomerService implements UserDetailsService {
     public Customer findOneByUsernameAndPassword(String username, String password){
         return customerRepository.findOneByUsernameAndPassword(username, password);
     }
-    @Transactional
-    public CustomerDetails loadUserByUsername(String username){
-        Customer c = customerRepository.findOneByUsername(username);
-        if(c == null){
-            throw new UsernameNotFoundException(username);
-        }
-        return new CustomerDetails(c);
+    public Customer findOneById(Integer id){
+        return customerRepository.findOneById(id);
     }
+
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
+
+
 
 }
 

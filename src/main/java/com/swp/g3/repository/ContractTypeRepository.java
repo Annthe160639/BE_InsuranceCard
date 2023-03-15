@@ -14,4 +14,5 @@ public interface ContractTypeRepository extends JpaRepository<ContractType, Inte
 
     public ContractType save(ContractType contractType);
 
+    public void deleteById(int id);
 }
