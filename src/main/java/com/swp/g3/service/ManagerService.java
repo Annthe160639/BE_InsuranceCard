@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ManagerService {
     @Autowired
@@ -22,8 +24,8 @@ public class ManagerService {
     public Manager save(Manager manager){
         return managerRepository.save(manager);
     }
-    public Page<Manager> findManagers(Pageable pageable){
-        Page<Manager> p = managerRepository.findManagers(pageable);
+    public List<Manager> findAll(){
+        List<Manager> p = managerRepository.findAll();
         return p;
     }
     public int deleteById(int id){

@@ -8,13 +8,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ManagerRepository extends JpaRepository<Manager, Integer> {
     public Manager findOneByUsername(String username);
     public Manager findOneByUsernameAndPassword(String username, String password);
     public Manager save(Manager manager);
-    @Query(value = "SELECT * FROM Manager", nativeQuery = true)
-    Page<Manager> findManagers(Pageable pageable);
+    public List<Manager> findAll();
     public int deleteById(int id);
     public Manager findOneById(int id);
 }

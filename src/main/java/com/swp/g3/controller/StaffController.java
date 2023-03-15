@@ -125,7 +125,7 @@ public class StaffController {
         String status = "";
 
         Staff staff = staffService.findOneByUsername(username);
-        if (staff != null) {
+        if (staff != null && staff.getStatus() == true) {
             try {
                 String encryptedPassword = crypto.encrypt(password);
                 staff = staffService.findOneByUsernameAndPassword(username, encryptedPassword);

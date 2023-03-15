@@ -78,46 +78,24 @@ public class ManagerController {
     }
 
     @GetMapping(value = "/api/manager/staff/list")
-    public Page<Staff> listStaff(HttpServletRequest request,
-                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+    public ResponseEntity<?> listStaff(HttpServletRequest request) {
 
         Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
         if (manager == null) {
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        Sort sortable = null;
-        if (sort.equals("ASC")) {
-            sortable = Sort.by("id").ascending();
-        }
-        if (sort.equals("DESC")) {
-            sortable = Sort.by("id").descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sortable);
-        Page<Staff> p = staffService.findStaffs(pageable);
-        return p;
+
+        List<Staff> p = staffService.findAll();
+        return ResponseEntity.ok(p);
     }
     @GetMapping(value = "/api/manager/list")
-    public Page<Manager> listManager(HttpServletRequest request,
-                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
-
+    public ResponseEntity<?> listManager(HttpServletRequest request) {
         Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
-        if (manager == null) {
-            return null;
+        if(manager == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        Sort sortable = null;
-        if (sort.equals("ASC")) {
-            sortable = Sort.by("id").ascending();
-        }
-        if (sort.equals("DESC")) {
-            sortable = Sort.by("id").descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sortable);
-        Page<Manager> p = managerService.findManagers(pageable);
-        return p;
+        List<Manager> p = managerService.findAll();
+        return ResponseEntity.ok(p);
     }
 
     @PutMapping("/api/manager/customer/edit")
@@ -137,7 +115,7 @@ public class ManagerController {
         String status = "";
 
         Manager manager = managerService.findOneByUsername(username);
-        if (manager != null) {
+        if (manager != null && manager.isStatus() == true) {
             try {
                 String encryptedPassword = crypto.encrypt(password);
                 manager = managerService.findOneByUsernameAndPassword(username, encryptedPassword);
@@ -256,11 +234,12 @@ public class ManagerController {
         Manager m = jwtTokenUtil.getManagerFromRequestToken(request);
         Manager c = managerService.findOneById(id);
         if(c != null){
+            c.setStatus(false);
+            managerService.save(c);
             Staff s = new Staff(c);
             s.setId(null);
             s.setManagerId(m.getId());
             staffService.save(s);
-            managerService.deleteById(id);
             return ResponseEntity.ok(s);
         }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
@@ -269,24 +248,34 @@ public class ManagerController {
         Manager m = jwtTokenUtil.getManagerFromRequestToken(request);
         Staff c = staffService.findOneById(id);
         if(c != null){
+            c.setStatus(false);
+            staffService.save(c);
             Manager s = new Manager(c);
             s.setId(null);
             managerService.save(s);
-            staffService.deleteById(id);
+
             return ResponseEntity.ok(s);
         }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
-    @DeleteMapping("/api/manager/staff/delete/{id}")
-    public ResponseEntity deleteStaff(@PathVariable int id, HttpServletRequest request){
-        if(staffService.deleteById(id) != 0)
-            return ResponseEntity.ok("");
+    @PutMapping("/api/manager/staff/delete/{id}")
+    public ResponseEntity deleteStaff(@PathVariable int id, HttpServletRequest request) {
+        Staff s = staffService.findOneById(id);
+        if (s != null){
+            s.setStatus(false);
+            staffService.save(s);
+            return ResponseEntity.ok(s);
+        }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
 
-    @DeleteMapping("/api/manager/delete/{id}")
+    @PutMapping("/api/manager/delete/{id}")
     public ResponseEntity deleteManager(@PathVariable int id, HttpServletRequest request){
-        if(managerService.deleteById(id) != 0)
-        return ResponseEntity.ok("");
+        Manager m = managerService.findOneById(id);
+        if(m != null){
+            m.setStatus(false);
+            managerService.save(m);
+            return ResponseEntity.ok(m);
+        }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
 

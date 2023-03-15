@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StaffService {
     @Autowired
@@ -18,8 +20,8 @@ public class StaffService {
     public Staff findOneByUsername(String username){
         return staffRepository.findOneByUsername(username);
     }
-    public Page<Staff> findStaffs(Pageable pageable){
-        Page<Staff> p = staffRepository.findStaffs(pageable);
+    public List<Staff> findAll(){
+        List<Staff> p = staffRepository.findAll();
         return p;
     }
     public Staff save(Staff staff){

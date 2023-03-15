@@ -16,6 +16,15 @@ public class Staff {
     private String password;
     private String role = "staff";
     private Integer managerId;
+    private boolean status;
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     public Integer getId() {
         return id;
@@ -52,6 +61,7 @@ public class Staff {
     public Integer getManagerId() {
         return managerId;
     }
+    public Staff(){}
 
     public void setManagerId(Integer managerId) {
         this.managerId = managerId;
@@ -60,5 +70,6 @@ public class Staff {
         this.username = manager.getUsername();
         this.password = manager.getPassword();
         this.role = "staff";
+        this.status = true;
     }
 }

@@ -17,10 +17,19 @@ public class Manager {
     @Nationalized
     private String role;
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    private boolean status;
 
     public Manager(){}
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -65,5 +74,6 @@ public class Manager {
         this.role = "manager";
         this.username = staff.getUsername();
         this.password = staff.getPassword();
+        this.status = true;
     }
 }

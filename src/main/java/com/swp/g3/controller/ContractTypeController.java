@@ -44,13 +44,15 @@ public class ContractTypeController {
         contractType.setManagerId(manager.getId());
         return contractTypeService.save(contractType);
     }
-    @DeleteMapping(value = "/api/manager/contract/type/delete/{id}")
+    @PutMapping(value = "/api/manager/contract/type/delete/{id}")
     public ResponseEntity<?> deleteContractType(@PathVariable int id){
-        if(contractTypeService.findOneById(id) == null){
+        ContractType c = contractTypeService.findOneById(id);
+        if(c == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }else {
-            contractTypeService.deleteById(id);
-            return ResponseEntity.ok().body("");
+            c.setStatus(false);
+            contractTypeService.save(c);
+            return ResponseEntity.ok(c);
         }
     }
 }

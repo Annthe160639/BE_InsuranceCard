@@ -8,12 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Integer> {
     public Staff findOneByUsernameAndPassword(String username, String password);
     public Staff findOneByUsername(String username);
-    @Query(value = "SELECT * FROM staff", nativeQuery = true)
-    Page<Staff> findStaffs(Pageable pageable);
+    public List<Staff> findAll();
     public Staff save(Staff staff);
     public int deleteById(int id);
     public Staff findOneById(int id);
