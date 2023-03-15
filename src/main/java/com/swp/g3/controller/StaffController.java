@@ -2,10 +2,10 @@ package com.swp.g3.controller;
 
 import com.swp.g3.entity.*;
 import com.swp.g3.entity.Customer;
-import com.swp.g3.entity.Manager;
 import com.swp.g3.entity.Staff;
 import com.swp.g3.entity.jwt.JwtRequest;
 import com.swp.g3.entity.jwt.JwtResponse;
+import com.swp.g3.service.CustomerService;
 import com.swp.g3.service.StaffService;
 import com.swp.g3.util.Crypto;
 import com.swp.g3.service.CompensationService;
@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,6 +44,8 @@ public class StaffController {
     CompensationService compensationService;
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    CustomerService customerService;
     @Autowired
     AuthenticationManager authenticationManager;
     @PutMapping(value = "/api/staff/contract/accept/{id}")
@@ -156,6 +159,27 @@ public class StaffController {
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+    @GetMapping(value = "/api/staff/customer/list")
+    public Page<Customer> listCustomer(HttpServletRequest request,
+                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
+                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+
+        Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
+        if (staff == null) {
+            return null;
+        }
+        Sort sortable = null;
+        if (sort.equals("ASC")) {
+            sortable = Sort.by("id").ascending();
+        }
+        if (sort.equals("DESC")) {
+            sortable = Sort.by("id").descending();
+        }
+        Pageable pageable = PageRequest.of(page, size, sortable);
+        Page<Customer> p = customerService.findCustomers(pageable);
+        return p;
     }
 
 }

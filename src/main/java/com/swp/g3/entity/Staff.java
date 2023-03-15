@@ -11,17 +11,17 @@ import javax.persistence.Id;
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String username;
     private String password;
     private String role = "staff";
-    private int managerId;
+    private Integer managerId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -49,11 +49,16 @@ public class Staff {
         this.role = role;
     }
 
-    public int getManagerId() {
+    public Integer getManagerId() {
         return managerId;
     }
 
-    public void setManagerId(int managerId) {
+    public void setManagerId(Integer managerId) {
         this.managerId = managerId;
+    }
+    public Staff(Manager manager){
+        this.username = manager.getUsername();
+        this.password = manager.getPassword();
+        this.role = "staff";
     }
 }

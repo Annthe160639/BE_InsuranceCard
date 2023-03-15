@@ -1,8 +1,11 @@
 package com.swp.g3.service;
 
+import com.swp.g3.entity.Customer;
 import com.swp.g3.entity.Staff;
 import com.swp.g3.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,5 +17,18 @@ public class StaffService {
     }
     public Staff findOneByUsername(String username){
         return staffRepository.findOneByUsername(username);
+    }
+    public Page<Staff> findStaffs(Pageable pageable){
+        Page<Staff> p = staffRepository.findStaffs(pageable);
+        return p;
+    }
+    public Staff save(Staff staff){
+        return staffRepository.save(staff);
+    }
+    public int deleteById(int id){
+        return staffRepository.deleteById(id);
+    }
+    public Staff findOneById(int id){
+        return staffRepository.findOneById(id);
     }
 }

@@ -175,13 +175,9 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/api/customer/profile/edit")
-    public ResponseEntity<?> editProfile(HttpServletRequest request, @RequestParam String name, @RequestParam String phone, @RequestParam String gmail, @RequestParam String address, @RequestParam String ci) {
-        Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
-        customer.setCi(ci);
-        customer.setAddress(address);
-        customer.setPhone(phone);
-        customer.setName(name);
-        customer.setGmail(gmail);
+    public ResponseEntity<?> editProfile(HttpServletRequest request, @RequestBody Customer customer) {
+        Customer c = jwtTokenUtil.getCustomerFromRequestToken(request);
+        customer.setPassword(c.getPassword());
         customerService.save(customer);
         return ResponseEntity.ok(customer);
     }

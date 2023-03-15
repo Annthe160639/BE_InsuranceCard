@@ -8,6 +8,7 @@ import com.swp.g3.repository.ManagerRepository;
 import com.swp.g3.service.CompensationService;
 import com.swp.g3.service.CustomerService;
 import com.swp.g3.service.ManagerService;
+import com.swp.g3.service.StaffService;
 import com.swp.g3.util.Crypto;
 import com.swp.g3.util.JwtTokenUtil;
 import io.jsonwebtoken.Jwts;
@@ -52,6 +53,8 @@ public class ManagerController {
     JwtTokenUtil jwtTokenUtil;
     @Autowired
     AuthenticationManager authenticationManager;
+    @Autowired
+    StaffService staffService;
     @GetMapping(value = "/api/manager/customer/list")
     public Page<Customer> listCustomer(HttpServletRequest request,
                                        @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
@@ -73,9 +76,55 @@ public class ManagerController {
         Page<Customer> p = customerService.findCustomers(pageable);
         return p;
     }
+
+    @GetMapping(value = "/api/manager/staff/list")
+    public Page<Staff> listStaff(HttpServletRequest request,
+                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
+                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+
+        Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+        if (manager == null) {
+            return null;
+        }
+        Sort sortable = null;
+        if (sort.equals("ASC")) {
+            sortable = Sort.by("id").ascending();
+        }
+        if (sort.equals("DESC")) {
+            sortable = Sort.by("id").descending();
+        }
+        Pageable pageable = PageRequest.of(page, size, sortable);
+        Page<Staff> p = staffService.findStaffs(pageable);
+        return p;
+    }
+    @GetMapping(value = "/api/manager/list")
+    public Page<Manager> listManager(HttpServletRequest request,
+                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
+                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+
+        Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+        if (manager == null) {
+            return null;
+        }
+        Sort sortable = null;
+        if (sort.equals("ASC")) {
+            sortable = Sort.by("id").ascending();
+        }
+        if (sort.equals("DESC")) {
+            sortable = Sort.by("id").descending();
+        }
+        Pageable pageable = PageRequest.of(page, size, sortable);
+        Page<Manager> p = managerService.findManagers(pageable);
+        return p;
+    }
+
     @PutMapping("/api/manager/customer/edit")
     public ResponseEntity editCustomer(@RequestBody Customer customer, HttpServletRequest request){
+        Customer c = customerService.findOneById(customer.getId());
         Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+        customer.setPassword(c.getPassword());
         customer.setManagerId(manager.getId());
         customerService.save(customer);
         return ResponseEntity.ok(customer);
@@ -199,6 +248,46 @@ public class ManagerController {
             return ResponseEntity.ok(compensation);
         }
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+    }
+
+
+    @PutMapping("/api/manager/edit/{id}")
+    public ResponseEntity editManager(HttpServletRequest request, @PathVariable int id){
+        Manager m = jwtTokenUtil.getManagerFromRequestToken(request);
+        Manager c = managerService.findOneById(id);
+        if(c != null){
+            Staff s = new Staff(c);
+            s.setId(null);
+            s.setManagerId(m.getId());
+            staffService.save(s);
+            managerService.deleteById(id);
+            return ResponseEntity.ok(s);
+        }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+    }
+    @PutMapping("/api/manager/staff/edit/{id}")
+    public ResponseEntity editStaff(HttpServletRequest request, @PathVariable int id){
+        Manager m = jwtTokenUtil.getManagerFromRequestToken(request);
+        Staff c = staffService.findOneById(id);
+        if(c != null){
+            Manager s = new Manager(c);
+            s.setId(null);
+            managerService.save(s);
+            staffService.deleteById(id);
+            return ResponseEntity.ok(s);
+        }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+    }
+    @DeleteMapping("/api/manager/staff/delete/{id}")
+    public ResponseEntity deleteStaff(@PathVariable int id, HttpServletRequest request){
+        if(staffService.deleteById(id) != 0)
+            return ResponseEntity.ok("");
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+    }
+
+    @DeleteMapping("/api/manager/delete/{id}")
+    public ResponseEntity deleteManager(@PathVariable int id, HttpServletRequest request){
+        if(managerService.deleteById(id) != 0)
+        return ResponseEntity.ok("");
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
 
 }
