@@ -20,4 +20,8 @@ public class ContractController {
     public Contract viewContractById(@PathVariable int id){
         return contractService.findOneById(id);
     }
+//    @GetMapping(value = "/api/contract/view/detail/{id}")
+//    public Contract viewContractById(@PathVariable int id){
+//        return contractService.findOneById(id);
+//    }
 }
