@@ -53,4 +53,7 @@ public class ContractService {
         return contractRepository.findAll();
 
     }
+    public List<Contract> findAllByManagerId(int id){
+        return contractRepository.findAllByManagerId(id);
+    }
 }

@@ -1,9 +1,14 @@
 package com.swp.g3.service;
 
 import com.swp.g3.entity.Manager;
+import com.swp.g3.entity.Staff;
 import com.swp.g3.repository.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ManagerService {
@@ -18,5 +23,15 @@ public class ManagerService {
     }
     public Manager save(Manager manager){
         return managerRepository.save(manager);
+    }
+    public List<Manager> findAll(){
+        List<Manager> p = managerRepository.findAll();
+        return p;
+    }
+    public int deleteById(int id){
+        return managerRepository.deleteById(id);
+    }
+    public Manager findOneById(int id){
+        return managerRepository.findOneById(id);
     }
 }

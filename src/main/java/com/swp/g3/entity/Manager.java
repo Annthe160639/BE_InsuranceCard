@@ -11,20 +11,29 @@ import javax.persistence.Id;
 public class Manager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String username;
     private String password;
     @Nationalized
     private String role;
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    private boolean status;
 
     public Manager(){}
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -60,5 +69,11 @@ public class Manager {
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
                 '}';
+    }
+    public Manager(Staff staff){
+        this.role = "manager";
+        this.username = staff.getUsername();
+        this.password = staff.getPassword();
+        this.status = true;
     }
 }

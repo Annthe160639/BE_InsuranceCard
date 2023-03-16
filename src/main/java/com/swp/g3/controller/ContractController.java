@@ -86,6 +86,12 @@ public class ContractController {
         List<Contract> contractList = contractService.findAllByStaffId(staffId);
         return contractList;
     }
+    @GetMapping(value = "/api/manager/contract")
+    public List<Contract> viewContract(HttpServletRequest request) {
+        Manager m = (Manager)jwtTokenUtil.getManagerFromRequestToken(request);
+        List<Contract> contractList = contractService.findAll();
+        return contractList;
+    }
 
     @GetMapping(value = "/api/staff/contract/{id}")
     public ResponseEntity<?> viewContract(HttpServletRequest request, @PathVariable int id) {
@@ -96,7 +102,28 @@ public class ContractController {
         }
         return ResponseEntity.ok(c);
     }
+    @GetMapping(value = "/api/manager/contract/{id}")
+    public ResponseEntity<?> viewContractById(HttpServletRequest request, @PathVariable int id) {
+        Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
+        Contract c = contractService.findOneById(id);
+        if (c == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        }
+        return ResponseEntity.ok(c);
+    }
+    @PutMapping(value = "/api/manager/contract/reject/{id}")
+    public ResponseEntity<?> rejectNewContract(HttpServletRequest request, @PathVariable int id) {
+        Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
+        Contract contract = contractService.findOneById(id);
+        if (contract.getStatus().equals("Đang xử lý")) {
+            contract.setManagerId(manager.getId());
+            contract.setStatus("Đã từ chối");
+            contractService.save(contract);
+            return ResponseEntity.ok(contract);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
 
+    }
     @PutMapping(value = "/api/manager/contract/approve/{id}")
     public ResponseEntity<?> approveNewContract(HttpServletRequest request, @PathVariable int id) {
         Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
