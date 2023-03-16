@@ -17,4 +17,5 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
     public Contract findOneById(int id);
     public List<Contract> findAll();
     public Contract findOneByIdAndStaffId(int id, int staffId);
+    public List<Contract> findAllByManagerId(int id);
 }

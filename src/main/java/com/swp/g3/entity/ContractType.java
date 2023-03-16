@@ -13,6 +13,15 @@ public class ContractType {
     private float insuranceLevel;
     private String description;
     private int managerId;
+    private boolean status;
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     public int getId() {
         return id;
