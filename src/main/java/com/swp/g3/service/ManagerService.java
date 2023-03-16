@@ -24,8 +24,8 @@ public class ManagerService {
     public Manager save(Manager manager){
         return managerRepository.save(manager);
     }
-    public List<Manager> findAll(){
-        List<Manager> p = managerRepository.findAll();
+    public List<Manager> findAllByStatus(boolean status){
+        List<Manager> p = managerRepository.findAllByStatus(status);
         return p;
     }
     public int deleteById(int id){

@@ -50,7 +50,11 @@ public class ContractService {
         return contractRepository.findOneById(id);
     }
     public List<Contract> findAll(){
-        return contractRepository.findAll();
+        List<Contract> contracts = contractRepository.findAll();
+        for (Contract c : contracts){
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return contracts;
 
     }
     public List<Contract> findAllByManagerId(int id){

@@ -179,6 +179,8 @@ public class CustomerController {
     public ResponseEntity<?> editProfile(HttpServletRequest request, @RequestBody Customer customer) {
         Customer c = jwtTokenUtil.getCustomerFromRequestToken(request);
         customer.setPassword(c.getPassword());
+        customer.setActive(c.isActive());
+        customer.setManagerId(c.getManagerId());
         customerService.save(customer);
         return ResponseEntity.ok(customer);
     }

@@ -105,11 +105,13 @@ public class ContractController {
     @GetMapping(value = "/api/manager/contract/{id}")
     public ResponseEntity<?> viewContractById(HttpServletRequest request, @PathVariable int id) {
         Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
-        Contract c = contractService.findOneById(id);
-        if (c == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        Contract contract = contractService.findOneById(id);
+        if (contract != null) {
+            contract.setBuyer(buyerService.findBuyerByid(contract.getBuyerId()));
+            contract.setContractType(contractTypeService.findOneById(contract.getTypeId()));
+            return ResponseEntity.ok(contract);
         }
-        return ResponseEntity.ok(c);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hợp đồng không tồn tại");
     }
     @PutMapping(value = "/api/manager/contract/reject/{id}")
     public ResponseEntity<?> rejectNewContract(HttpServletRequest request, @PathVariable int id) {

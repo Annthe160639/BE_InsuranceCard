@@ -94,7 +94,7 @@ public class ManagerController {
         if(manager == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        List<Manager> p = managerService.findAll();
+        List<Manager> p = managerService.findAllByStatus(true);
         return ResponseEntity.ok(p);
     }
 

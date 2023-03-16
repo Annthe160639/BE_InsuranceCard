@@ -15,7 +15,7 @@ public interface ManagerRepository extends JpaRepository<Manager, Integer> {
     public Manager findOneByUsername(String username);
     public Manager findOneByUsernameAndPassword(String username, String password);
     public Manager save(Manager manager);
-    public List<Manager> findAll();
+    public List<Manager> findAllByStatus(boolean status);
     public int deleteById(int id);
     public Manager findOneById(int id);
 }
