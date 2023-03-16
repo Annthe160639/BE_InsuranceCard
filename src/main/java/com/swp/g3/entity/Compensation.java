@@ -2,10 +2,7 @@ package com.swp.g3.entity;
 
 import org.hibernate.annotations.Nationalized;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
@@ -23,27 +20,28 @@ public class Compensation {
     @Nationalized
     private String status = "Đang chờ xử lý.";
     private int customerId;
-
+    private Integer staffId;
+    private Integer managerId;
+    @Transient
+    private Contract contract;
+    public Contract getContract() {
+        return contract;
+    }
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
     public void setManagerId(Integer managerId) {
         this.managerId = managerId;
     }
-
     public Integer getManagerId() {
         return managerId;
     }
-
     public Integer getStaffId() {
         return staffId;
     }
-
-    private Integer managerId;
-
     public void setStaffId(Integer staffId) {
         this.staffId = staffId;
     }
-
-    private Integer staffId;
-
     public int getId() {
         return id;
     }

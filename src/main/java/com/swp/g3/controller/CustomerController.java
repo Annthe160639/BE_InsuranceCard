@@ -182,11 +182,13 @@ public class CustomerController {
     @PutMapping(value = "/api/customer/profile/edit")
     public ResponseEntity<?> editProfile(HttpServletRequest request, @RequestBody Customer customer) {
         Customer c = jwtTokenUtil.getCustomerFromRequestToken(request);
-        customer.setPassword(c.getPassword());
-        customer.setActive(c.isActive());
-        customer.setManagerId(c.getManagerId());
-        customerService.save(customer);
-        return ResponseEntity.ok(customer);
+        c.setName(customer.getName());
+        c.setPhone(customer.getPhone());
+        c.setGmail(customer.getGmail());
+        c.setAddress(customer.getAddress());
+        c.setCi(customer.getCi());
+        customerService.save(c);
+        return ResponseEntity.ok(c);
     }
     @GetMapping("/api/staff/customer/{id}")
     private ResponseEntity<?> getCustomerInfo(@PathVariable int id){

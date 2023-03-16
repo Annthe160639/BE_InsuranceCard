@@ -81,7 +81,7 @@ public class ContractController {
 
     @GetMapping(value = "/api/staff/contract")
     public List<Contract> viewContractHistory(HttpServletRequest request) {
-        Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
+    Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
         int staffId = staff.getId();
         List<Contract> contractList = contractService.findAllByStaffId(staffId);
         return contractList;
@@ -130,7 +130,7 @@ public class ContractController {
     public ResponseEntity<?> approveNewContract(HttpServletRequest request, @PathVariable int id) {
         Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
         Contract contract = contractService.findOneById(id);
-        if (contract.getStatus().equals("Đang xử lý")) {
+        if (contract.getStatus().toLowerCase().equals("Ðang xử lý".toLowerCase())) {
             contract.setManagerId(manager.getId());
             contract.setStatus("Đã duyệt");
             contractService.save(contract);
