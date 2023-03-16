@@ -90,6 +90,10 @@ public class CustomerController {
         return customerService.findOneByGmail(gmail) != null;
     }
 
+    public int getNumberTest(int a, int b){
+        return a+b;
+    }
+
 
     @PostMapping(value = "/api/customer/login")
     @ResponseBody

@@ -20,12 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @WebMvcTest(CompensationController.class)
 
 class CompensationControllerTest {
-//    @Autowired
-//    private MockMvc mvc;
-//    @Test
-//    void viewListCompensation() throws Exception{
-//        RequestBuilder request = MockMvcRequestBuilders.get("/api/customer/compensation");
-//        MvcResult result = mvc.perform(request).andReturn();
-//        assertNotNull(result.getResponse().getContentAsString());
-//    }
+    @Autowired
+    private MockMvc mvc;
+    @Test
+    void viewListCompensation() throws Exception{
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/customer/compensation");
+        MvcResult result = mvc.perform(request).andReturn();
+        assertNotNull(result.getResponse().getContentAsString());
+    }
+
+
 }
