@@ -278,5 +278,17 @@ public class ManagerController {
         }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
-
+    @PostMapping("/api/manager/staff/add")
+    public ResponseEntity addStaff(@RequestBody Staff staff, HttpServletRequest request){
+        if(staff.getRole().equals("staff")){
+            Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+            staff.setManagerId(manager.getId());
+            staff.setStatus(true);
+            staffService.save(staff);
+        }else{
+            Manager m = new Manager(staff);
+            managerService.save(m);
+        }
+        return ResponseEntity.ok("");
+    }
 }
