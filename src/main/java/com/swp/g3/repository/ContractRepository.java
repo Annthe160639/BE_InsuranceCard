@@ -1,6 +1,7 @@
 package com.swp.g3.repository;
 
 import com.swp.g3.entity.Contract;
+import com.swp.g3.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public interface ContractRepository extends JpaRepository<Contract, Integer> {
     public Contract save(Contract newContract);
     public List<Contract> findAllByCustomerId(int id);
+    public List<Contract> findAllByCustomerIdAndStatus(int id, String status);
     public Contract findOneByIdAndCustomerId(int id, int customerId);
     public List<Contract> findAllByStaffId(int id);
     public List<Contract> findAllByStaffIdAndStatus(int id, String status);

@@ -28,7 +28,7 @@ public class CompensationService {
     }
 
 
-    public List<Compensation> findAllByStatus(String status) {
+    public List<Compensation>   findAllByStatus(String status) {
         List<Compensation> compensations = compensationRepository.findAllByStatus(status);
         for (Compensation c : compensations) {
             c.setContract(contractService.findOneById(c.getContractId()));
@@ -45,7 +45,10 @@ public class CompensationService {
     }
 
     public Compensation findOneById(int id) {
-        return compensationRepository.findOneById(id);
+        Compensation c = compensationRepository.findOneById(id);
+        if (c != null)
+            c.setContract(contractService.findOneById(c.getContractId()));
+        return c;
     }
 
     public List<Compensation> findAll() {
@@ -61,6 +64,9 @@ public class CompensationService {
     }
 
     public Compensation findOneByIdAndStaffId(int id, int staffId) {
-        return compensationRepository.findOneByIdAndStaffId(id, staffId);
+        Compensation c = compensationRepository.findOneByIdAndStaffId(id, staffId);
+        if (c != null)
+            c.setContract(contractService.findOneById(c.getContractId()));
+        return c;
     }
 }

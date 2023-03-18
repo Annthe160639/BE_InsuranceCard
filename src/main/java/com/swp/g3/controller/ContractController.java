@@ -59,6 +59,13 @@ public class ContractController {
         return contractService.findAllByCustomerId(customer.getId());
     }
 
+    @GetMapping(value = "/api/customer/approve/contract")
+    public List<Contract> loadApproveContractList(HttpServletRequest request) {
+        Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
+
+        return contractService.findAllByCustomerIdAndStatus(customer.getId(), "Đã duyệt");
+    }
+
     @GetMapping(value = "/api/customer/contract/{id}")
     public ResponseEntity<?> viewContractDetails(@PathVariable int id, HttpServletRequest request) {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);

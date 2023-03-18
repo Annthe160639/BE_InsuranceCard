@@ -110,7 +110,7 @@ public class StaffController {
         else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Đã duyệt"))
         {
             compensation.setStaffId(staff.getId());
-            compensation.setStatus("Đã duyệt");
+            compensation.setStatus("Đang xử lý");
             compensationService.save(compensation);
             return ResponseEntity.ok(compensation);
         }

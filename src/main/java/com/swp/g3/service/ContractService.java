@@ -21,7 +21,15 @@ public class ContractService {
 
     public List<Contract> findAllByCustomerId(int id) {
         List<Contract> contracts = contractRepository.findAllByCustomerId(id);
-        for (Contract c : contracts){
+        for (Contract c : contracts) {
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return contracts;
+    }
+
+    public List<Contract> findAllByCustomerIdAndStatus(int id, String status) {
+        List<Contract> contracts = contractRepository.findAllByCustomerIdAndStatus(id, status);
+        for (Contract c : contracts) {
             c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         }
         return contracts;
@@ -35,7 +43,7 @@ public class ContractService {
 
     public List<Contract> findAllByStatus(String status) {
         List<Contract> contracts = contractRepository.findAllByStatus(status);
-        for (Contract c : contracts){
+        for (Contract c : contracts) {
             c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         }
         return contracts;
@@ -43,7 +51,7 @@ public class ContractService {
 
     public List<Contract> findAllByStaffId(int id) {
         List<Contract> contracts = contractRepository.findAllByStaffId(id);
-        for (Contract c : contracts){
+        for (Contract c : contracts) {
             c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         }
         return contracts;
@@ -51,14 +59,23 @@ public class ContractService {
 
     public List<Contract> findAllByStaffIdAndStatus(int id, String status) {
         List<Contract> contracts = contractRepository.findAllByStaffIdAndStatus(id, status);
-        for (Contract c : contracts){
+        for (Contract c : contracts) {
             c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         }
         return contracts;
     }
-    public Contract findOneByIdAndStaffId(int id, int staffId){
+
+    public Contract findOneByIdAndStaffId(int id, int staffId) {
         Contract c = contractRepository.findOneByIdAndStaffId(id, staffId);
-        c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        if (c == null) {
+            c = contractRepository.findOneById(id);
+            if (c.getStatus() == "Đang chờ xử lý") {
+                c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+                return c;
+            }
+        } else {
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
         return c;
     }
 
@@ -67,15 +84,17 @@ public class ContractService {
         c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         return c;
     }
-    public List<Contract> findAll(){
+
+    public List<Contract> findAll() {
         List<Contract> contracts = contractRepository.findAll();
-        for (Contract c : contracts){
+        for (Contract c : contracts) {
             c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         }
         return contracts;
 
     }
-    public List<Contract> findAllByManagerId(int id){
+
+    public List<Contract> findAllByManagerId(int id) {
         return contractRepository.findAllByManagerId(id);
     }
 }
