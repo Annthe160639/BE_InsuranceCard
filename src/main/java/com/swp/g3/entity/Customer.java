@@ -126,7 +126,7 @@ public class Customer {
         this.role = role;
     }
 
-    public int getManagerId() {
+    public Integer getManagerId() {
         return managerId;
     }
 
