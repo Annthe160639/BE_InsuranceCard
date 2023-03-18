@@ -16,7 +16,7 @@ public class EmailService {
     @Autowired
     private EmailHelper emailHelper;
     public void sendVerifyEmail(String toEmail, String username, String name) throws MessagingException{
-            String from = "annthe160639@fpt.edu.vn";
+            String from = "1duckyltt@gmail.com";
 
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -32,7 +32,7 @@ public class EmailService {
             mailSender.send(message);
     }
     public void sendResetPasswordEmail(String toEmail, String username, String name) throws MessagingException{
-        String from = "annthe160639@fpt.edu.vn";
+        String from = "1duckyltt@gmail.com";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
