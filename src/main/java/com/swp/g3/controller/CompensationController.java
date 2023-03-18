@@ -45,7 +45,7 @@ public class CompensationController {
     public ResponseEntity<?> viewCompensation(HttpServletRequest request, @PathVariable int id) {
         Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
         Compensation c = compensationService.findOneById(id);
-        if (c.getStatus().compareTo("Đang chờ xử lý") == 0) {
+        if (c.getStatus().compareTo("Ðang chờ xử lý") == 0) {
             return ResponseEntity.ok(c);
         } else {
             c = compensationService.findOneByIdAndStaffId(id, staff.getId());
@@ -59,7 +59,7 @@ public class CompensationController {
 
     @GetMapping("/api/staff/compensation/list")
     public List<Compensation> showCompensationList() {
-        return compensationService.findAllByStatus("Đang chờ xử lý");
+        return compensationService.findAllByStatus("Ðang chờ xử lý");
     }
 
     @GetMapping(value = "/api/manager/compensation/{id}")

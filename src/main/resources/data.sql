@@ -45,18 +45,18 @@ INSERT INTO [dbo].[contract] ([pattern], [type_id], [start_date], [end_date], [s
 INSERT INTO [dbo].[contract] ([pattern], [type_id], [start_date], [end_date], [status], [manager_id], [staff_id], [customer_id])
     values ('30-G5 5212', 2, '5/2/2021', '3/3/2021', 'Đang chờ xử lí', 2, 2, 2);
 INSERT INTO [dbo].[contract] ([pattern], [type_id], [start_date], [end_date], [status], [manager_id], [staff_id], [customer_id])
-    values ('29-P4 6231', 3, '2/5/2021', '8/6/2021', 'Đã duyệt', 3, 3, 3);
+    values ('29-P4 6231', 3, '2/5/2021', '8/6/2021', 'Ðã duyệt', 3, 3, 3);
 INSERT INTO [dbo].[contract] ([pattern], [type_id], [start_date], [end_date], [status], [manager_id], [staff_id], [customer_id])
     values ('64-A2 7184', 4, '3/1/2022', '6/12/2022', 'Đang xử lí', 4, 4, 4);
 INSERT INTO [dbo].[contract] ([pattern], [type_id], [start_date], [end_date], [status], [manager_id], [staff_id], [customer_id])
-    values ('40-H2 2818', 5, '7/2/2022', '1/12/2022', 'Đã duyệt', 5, 5, 5);
+    values ('40-H2 2818', 5, '7/2/2022', '1/12/2022', 'Ðã duyệt', 5, 5, 5);
 
 INSERT INTO [dbo].[compensation] ([images], [accident_address], [accident_time], [payment], [contract_id], [status], [customer_id], [manager_id], [staff_id])
     values ('https://i.imgflip.com/5zn5dt.jpg', 'Đa Hội', '1/1/2022', 5425000, 1, 'Đang xử lí', 1, 1, 1);
 INSERT INTO [dbo].[compensation] ([images], [accident_address], [accident_time], [payment], [contract_id], [status], [customer_id], [manager_id], [staff_id])
     values ('https://i.imgflip.com/56at69.jpg', 'Hoài Đức', '1/1/2022', null, 2, 'Đang chờ xử lí', 2, 2, 2);
 INSERT INTO [dbo].[compensation] ([images], [accident_address], [accident_time], [payment], [contract_id], [status], [customer_id], [manager_id], [staff_id])
-    values ('https://i.pinimg.com/originals/42/4f/93/424f935cc0c962b183865c9f634f2e83.jpg', 'Đa Hội', '1/1/2022', 8120000, 3, 'Đã duyệt', 3, 3, 3);
+    values ('https://i.pinimg.com/originals/42/4f/93/424f935cc0c962b183865c9f634f2e83.jpg', 'Đa Hội', '1/1/2022', 8120000, 3, 'Ðã duyệt', 3, 3, 3);
 INSERT INTO [dbo].[compensation] ([images], [accident_address], [accident_time], [payment], [contract_id], [status], [customer_id], [manager_id], [staff_id])
     values ('https://i.pinimg.com/736x/f7/42/48/f74248291f310e84c1730135a3944885--dirtbikes-stay-cool.jpg', 'Thái Nguyên', '1/6/2021', null, 4, 'Đang chờ xử lí', 4, 4, 4);
 INSERT INTO [dbo].[compensation] ([images], [accident_address], [accident_time], [payment], [contract_id], [status], [customer_id], [manager_id], [staff_id])
