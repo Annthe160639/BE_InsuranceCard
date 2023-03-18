@@ -18,7 +18,7 @@ public class Compensation {
     private Float payment;
     private int contractId;
     @Nationalized
-    private String status = "Đang chờ xử lý";
+    private String status = "Ðang chờ xử lý";
     private int customerId;
     private Integer staffId;
     private Integer managerId;

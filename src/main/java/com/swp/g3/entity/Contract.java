@@ -18,7 +18,7 @@ public class Contract {
     private Date startDate;
     private Date endDate;
     @Nationalized
-    private String status = "Đang chờ xử lý";
+    private String status = "Ðang chờ xử lý";
     private Integer managerId;
     private Integer staffId;
     private int customerId;

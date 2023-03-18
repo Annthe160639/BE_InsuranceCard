@@ -63,7 +63,7 @@ public class ContractController {
     public List<Contract> loadApproveContractList(HttpServletRequest request) {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
 
-        return contractService.findAllByCustomerIdAndStatus(customer.getId(), "Đã duyệt");
+        return contractService.findAllByCustomerIdAndStatus(customer.getId(), "Ðã duyệt");
     }
 
     @GetMapping(value = "/api/customer/contract/{id}")
@@ -88,14 +88,15 @@ public class ContractController {
 
     @GetMapping(value = "/api/staff/contract")
     public List<Contract> viewContractHistory(HttpServletRequest request) {
-    Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
+        Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
         int staffId = staff.getId();
         List<Contract> contractList = contractService.findAllByStaffId(staffId);
         return contractList;
     }
+
     @GetMapping(value = "/api/manager/contract")
     public List<Contract> viewContract(HttpServletRequest request) {
-        Manager m = (Manager)jwtTokenUtil.getManagerFromRequestToken(request);
+        Manager m = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
         List<Contract> contractList = contractService.findAll();
         return contractList;
     }
@@ -109,6 +110,7 @@ public class ContractController {
         }
         return ResponseEntity.ok(c);
     }
+
     @GetMapping(value = "/api/manager/contract/{id}")
     public ResponseEntity<?> viewContractById(HttpServletRequest request, @PathVariable int id) {
         Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
@@ -120,6 +122,7 @@ public class ContractController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hợp đồng không tồn tại");
     }
+
     @PutMapping(value = "/api/manager/contract/reject/{id}")
     public ResponseEntity<?> rejectNewContract(HttpServletRequest request, @PathVariable int id) {
         Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
@@ -133,13 +136,14 @@ public class ContractController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
 
     }
+
     @PutMapping(value = "/api/manager/contract/approve/{id}")
     public ResponseEntity<?> approveNewContract(HttpServletRequest request, @PathVariable int id) {
         Manager manager = (Manager) jwtTokenUtil.getManagerFromRequestToken(request);
         Contract contract = contractService.findOneById(id);
-        if (contract.getStatus().toLowerCase().equals("Ðang xử lý".toLowerCase())) {
+        if (contract.getStatus().toLowerCase().equals("Đang xử lý".toLowerCase())) {
             contract.setManagerId(manager.getId());
-            contract.setStatus("Đã duyệt");
+            contract.setStatus("Ðã duyệt");
             contractService.save(contract);
             return ResponseEntity.ok(contract);
         }

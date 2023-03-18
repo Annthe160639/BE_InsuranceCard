@@ -58,7 +58,7 @@ public class CustomerController {
 
 // change password
     @PostMapping(value = "/api/customer/password/change")
-    public @ResponseBody String changePassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpServletRequest request){
+    public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpServletRequest request){
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         try {
             String encryptedPassword = crypto.encrypt(oldPassword);
@@ -67,16 +67,16 @@ public class CustomerController {
                     encryptedPassword = crypto.encrypt(password);
                     customer.setPassword(encryptedPassword);
                     customerRepository.save(customer);
-                    return "Thay đổi mật khẩu thành công!";
+                    return ResponseEntity.ok("Thay đổi mật khẩu thành công!");
                 }else {
-                    return "Mật khẩu không khớp!";
+                    return ResponseEntity.badRequest().body("Mật khẩu không khớp!");
                 }
             }else {
-                return "Sai mật khẩu!";
+                return ResponseEntity.badRequest().body("Sai mật khẩu!");
             }
         }catch (Exception e) {
             e.printStackTrace();
-            return "Mã hóa mật khẩu lỗi.";
+            return ResponseEntity.badRequest().body("Mã hóa mật khẩu lỗi.");
         }
     }
 
@@ -169,6 +169,7 @@ public class CustomerController {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         if(customer != null){
             customer.setPassword("");
+            customer.setManagerId(1);
             return ResponseEntity.ok(customer);
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");

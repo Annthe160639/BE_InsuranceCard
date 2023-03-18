@@ -221,7 +221,7 @@ public class ManagerController {
         else if(compensation.getStatus().equals("Đang xử lý"))
         {
             compensation.setManagerId(manager.getId());
-            compensation.setStatus("Đã duyệt");
+            compensation.setStatus("Ðã duyệt");
             compensationService.save(compensation);
             return ResponseEntity.ok(compensation);
         }

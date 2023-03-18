@@ -55,7 +55,7 @@ public class StaffController {
         if(contract == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Đã duyệt"))
+        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Ðã duyệt"))
         {
             contract.setStaffId(staff.getId());
             contract.setStatus("Đang xử lý");
@@ -73,7 +73,7 @@ public class StaffController {
         if(contract == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Đã duyệt"))
+        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Ðã duyệt"))
         {
             contract.setStaffId(staff.getId());
             contract.setStatus("Đã từ chối");
@@ -90,7 +90,7 @@ public class StaffController {
         if(compensation == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Đã duyệt"))
+        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Ðã duyệt"))
         {
             compensation.setStaffId(staff.getId());
             compensation.setStatus("Đã từ chối");
@@ -107,7 +107,7 @@ public class StaffController {
         if(compensation == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Đã duyệt"))
+        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Ðã duyệt"))
         {
             compensation.setStaffId(staff.getId());
             compensation.setStatus("Đang xử lý");

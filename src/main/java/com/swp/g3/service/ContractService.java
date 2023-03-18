@@ -1,6 +1,7 @@
 package com.swp.g3.service;
 
 import com.swp.g3.entity.Contract;
+import com.swp.g3.repository.BuyerRepository;
 import com.swp.g3.repository.ContractRepository;
 import com.swp.g3.repository.ContractTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ public class ContractService {
     ContractRepository contractRepository;
     @Autowired
     ContractTypeRepository contractTypeRepository;
-
+    @Autowired
+    BuyerRepository buyerRepository;
     public Contract save(Contract newContract) {
         return contractRepository.save(newContract);
     }
@@ -69,11 +71,13 @@ public class ContractService {
         Contract c = contractRepository.findOneByIdAndStaffId(id, staffId);
         if (c == null) {
             c = contractRepository.findOneById(id);
-            if (c.getStatus() == "Đang chờ xử lý") {
+            if (c.getStatus().equals("Ðang chờ xử lý")) {
                 c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+                c.setBuyer(buyerRepository.findOneById(c.getBuyerId()));
                 return c;
             }
         } else {
+            c.setBuyer(buyerRepository.findOneById(c.getBuyerId()));
             c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         }
         return c;
