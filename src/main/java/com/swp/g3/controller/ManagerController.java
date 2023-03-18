@@ -56,24 +56,14 @@ public class ManagerController {
     @Autowired
     StaffService staffService;
     @GetMapping(value = "/api/manager/customer/list")
-    public Page<Customer> listCustomer(HttpServletRequest request,
-                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+    public List<Customer> listCustomer(HttpServletRequest request) {
 
         Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
         if (manager == null) {
             return null;
         }
-        Sort sortable = null;
-        if (sort.equals("ASC")) {
-            sortable = Sort.by("id").ascending();
-        }
-        if (sort.equals("DESC")) {
-            sortable = Sort.by("id").descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sortable);
-        Page<Customer> p = customerService.findCustomers(pageable);
+
+        List<Customer> p = customerService.findCustomers();
         return p;
     }
 
