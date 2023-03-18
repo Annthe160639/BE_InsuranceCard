@@ -37,6 +37,7 @@ public class Customer {
     @JsonSetter(nulls = Nulls.SKIP)
     private boolean isActive = false;
     private String role = "customer";
+    @JsonSetter(nulls = Nulls.SKIP)
     private Integer managerId;
 
     public Customer(){}
@@ -126,7 +127,7 @@ public class Customer {
         this.role = role;
     }
 
-    public int getManagerId() {
+    public Integer getManagerId() {
         return managerId;
     }
 

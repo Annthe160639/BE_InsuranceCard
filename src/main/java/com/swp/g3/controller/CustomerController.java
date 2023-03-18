@@ -169,6 +169,7 @@ public class CustomerController {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         if(customer != null){
             customer.setPassword("");
+            customer.setManagerId(1);
             return ResponseEntity.ok(customer);
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
