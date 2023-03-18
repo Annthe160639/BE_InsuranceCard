@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @Validated
@@ -161,24 +162,12 @@ public class StaffController {
         }
     }
     @GetMapping(value = "/api/staff/customer/list")
-    public Page<Customer> listCustomer(HttpServletRequest request,
-                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
-
+    public List<Customer> listCustomer(HttpServletRequest request) {
         Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
         if (staff == null) {
             return null;
         }
-        Sort sortable = null;
-        if (sort.equals("ASC")) {
-            sortable = Sort.by("id").ascending();
-        }
-        if (sort.equals("DESC")) {
-            sortable = Sort.by("id").descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sortable);
-        Page<Customer> p = customerService.findCustomers(pageable);
+        List<Customer> p = customerService.findCustomers();
         return p;
     }
 

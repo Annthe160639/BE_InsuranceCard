@@ -40,8 +40,8 @@ public class CustomerService  {
         Customer c = customerRepository.findOneByGmail(gmail);
         return c;
     }
-    public Page<Customer> findCustomers(Pageable pageable){
-        Page<Customer> p = customerRepository.findCustomers(pageable);
+    public List<Customer> findCustomers(){
+        List<Customer> p = customerRepository.findCustomers();
         return p;
     }
     public Customer findOneByUsernameAndPassword(String username, String password){
