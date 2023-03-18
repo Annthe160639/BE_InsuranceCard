@@ -142,7 +142,7 @@ public class CustomerController {
         }
     }
 
-    @GetMapping(value = "/api/customer/password/reset")
+    @PostMapping(value = "/api/customer/password/reset")
     public String resetPassword(@RequestParam(name = "username", required = true) String username) {
         Customer c = customerService.findOneByUsername(username);
 
