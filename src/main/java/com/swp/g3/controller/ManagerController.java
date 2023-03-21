@@ -272,6 +272,11 @@ public class ManagerController {
     public ResponseEntity addStaff(@RequestBody Staff staff, HttpServletRequest request){
         if(staff.getRole().equals("staff")){
             Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+            try{
+                staff.setPassword(crypto.encrypt(staff.getPassword()));
+            } catch(Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi thêm nhân viên mới");
+            }
             staff.setManagerId(manager.getId());
             staff.setStatus(true);
             staffService.save(staff);
