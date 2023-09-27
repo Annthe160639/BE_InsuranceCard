@@ -58,7 +58,7 @@ public class CustomerController {
 
 // change password
     @PostMapping(value = "/api/customer/password/change")
-    public @ResponseBody String changePassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpServletRequest request){
+    public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String password, @RequestParam String password2, HttpServletRequest request){
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         try {
             String encryptedPassword = crypto.encrypt(oldPassword);
@@ -67,16 +67,16 @@ public class CustomerController {
                     encryptedPassword = crypto.encrypt(password);
                     customer.setPassword(encryptedPassword);
                     customerRepository.save(customer);
-                    return "Thay đổi mật khẩu thành công!";
+                    return ResponseEntity.ok("Thay đổi mật khẩu thành công!");
                 }else {
-                    return "Mật khẩu không khớp!";
+                    return ResponseEntity.badRequest().body("Mật khẩu không khớp!");
                 }
             }else {
-                return "Sai mật khẩu!";
+                return ResponseEntity.badRequest().body("Sai mật khẩu!");
             }
         }catch (Exception e) {
             e.printStackTrace();
-            return "Mã hóa mật khẩu lỗi.";
+            return ResponseEntity.badRequest().body("Mã hóa mật khẩu lỗi.");
         }
     }
 
@@ -142,7 +142,7 @@ public class CustomerController {
         }
     }
 
-    @GetMapping(value = "/api/customer/password/reset")
+    @PostMapping(value = "/api/customer/password/reset")
     public String resetPassword(@RequestParam(name = "username", required = true) String username) {
         Customer c = customerService.findOneByUsername(username);
 
@@ -169,6 +169,7 @@ public class CustomerController {
         Customer customer = jwtTokenUtil.getCustomerFromRequestToken(request);
         if(customer != null){
             customer.setPassword("");
+            customer.setManagerId(1);
             return ResponseEntity.ok(customer);
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
@@ -182,9 +183,13 @@ public class CustomerController {
     @PutMapping(value = "/api/customer/profile/edit")
     public ResponseEntity<?> editProfile(HttpServletRequest request, @RequestBody Customer customer) {
         Customer c = jwtTokenUtil.getCustomerFromRequestToken(request);
-        customer.setPassword(c.getPassword());
-        customerService.save(customer);
-        return ResponseEntity.ok(customer);
+        c.setName(customer.getName());
+        c.setPhone(customer.getPhone());
+        c.setGmail(customer.getGmail());
+        c.setAddress(customer.getAddress());
+        c.setCi(customer.getCi());
+        customerService.save(c);
+        return ResponseEntity.ok(c);
     }
     @GetMapping("/api/staff/customer/{id}")
     private ResponseEntity<?> getCustomerInfo(@PathVariable int id){

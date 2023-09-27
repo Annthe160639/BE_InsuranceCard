@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @Validated
@@ -55,7 +56,7 @@ public class StaffController {
         if(contract == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Đã duyệt"))
+        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Ðã duyệt"))
         {
             contract.setStaffId(staff.getId());
             contract.setStatus("Đang xử lý");
@@ -73,7 +74,7 @@ public class StaffController {
         if(contract == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Đã duyệt"))
+        else if((contract.getStaffId() == null || contract.getStaffId() == staff.getId()) && !contract.getStatus().equals("Ðã duyệt"))
         {
             contract.setStaffId(staff.getId());
             contract.setStatus("Đã từ chối");
@@ -90,7 +91,7 @@ public class StaffController {
         if(compensation == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Đã duyệt"))
+        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Ðã duyệt"))
         {
             compensation.setStaffId(staff.getId());
             compensation.setStatus("Đã từ chối");
@@ -107,10 +108,10 @@ public class StaffController {
         if(compensation == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Đã duyệt"))
+        else if((compensation.getStaffId() == null || compensation.getStaffId() == staff.getId()) && !compensation.getStatus().equals("Ðã duyệt"))
         {
             compensation.setStaffId(staff.getId());
-            compensation.setStatus("Đã duyệt");
+            compensation.setStatus("Đang xử lý");
             compensationService.save(compensation);
             return ResponseEntity.ok(compensation);
         }
@@ -161,24 +162,12 @@ public class StaffController {
         }
     }
     @GetMapping(value = "/api/staff/customer/list")
-    public Page<Customer> listCustomer(HttpServletRequest request,
-                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
-
+    public List<Customer> listCustomer(HttpServletRequest request) {
         Staff staff = jwtTokenUtil.getStaffFromRequestToken(request);
         if (staff == null) {
             return null;
         }
-        Sort sortable = null;
-        if (sort.equals("ASC")) {
-            sortable = Sort.by("id").ascending();
-        }
-        if (sort.equals("DESC")) {
-            sortable = Sort.by("id").descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sortable);
-        Page<Customer> p = customerService.findCustomers(pageable);
+        List<Customer> p = customerService.findCustomers();
         return p;
     }
 

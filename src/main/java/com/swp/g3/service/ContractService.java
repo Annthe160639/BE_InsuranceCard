@@ -1,6 +1,7 @@
 package com.swp.g3.service;
 
 import com.swp.g3.entity.Contract;
+import com.swp.g3.repository.BuyerRepository;
 import com.swp.g3.repository.ContractRepository;
 import com.swp.g3.repository.ContractTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,46 +15,90 @@ public class ContractService {
     ContractRepository contractRepository;
     @Autowired
     ContractTypeRepository contractTypeRepository;
-
+    @Autowired
+    BuyerRepository buyerRepository;
     public Contract save(Contract newContract) {
         return contractRepository.save(newContract);
     }
 
     public List<Contract> findAllByCustomerId(int id) {
         List<Contract> contracts = contractRepository.findAllByCustomerId(id);
-        for (Contract c : contracts){
+        for (Contract c : contracts) {
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return contracts;
+    }
+
+    public List<Contract> findAllByCustomerIdAndStatus(int id, String status) {
+        List<Contract> contracts = contractRepository.findAllByCustomerIdAndStatus(id, status);
+        for (Contract c : contracts) {
             c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
         }
         return contracts;
     }
 
     public Contract findOneByIdAndCustomerId(int id, int customerId) {
-        return contractRepository.findOneByIdAndCustomerId(id, customerId);
+        Contract c = contractRepository.findOneByIdAndCustomerId(id, customerId);
+        c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        return c;
     }
 
     public List<Contract> findAllByStatus(String status) {
-        return contractRepository.findAllByStatus(status);
+        List<Contract> contracts = contractRepository.findAllByStatus(status);
+        for (Contract c : contracts) {
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return contracts;
     }
 
     public List<Contract> findAllByStaffId(int id) {
-        return contractRepository.findAllByStaffId((id));
+        List<Contract> contracts = contractRepository.findAllByStaffId(id);
+        for (Contract c : contracts) {
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return contracts;
     }
 
     public List<Contract> findAllByStaffIdAndStatus(int id, String status) {
-        return contractRepository.findAllByStaffIdAndStatus(id, status);
+        List<Contract> contracts = contractRepository.findAllByStaffIdAndStatus(id, status);
+        for (Contract c : contracts) {
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return contracts;
     }
-    public Contract findOneByIdAndStaffId(int id, int staffId){
-        return contractRepository.findOneByIdAndStaffId(id, staffId);
+
+    public Contract findOneByIdAndStaffId(int id, int staffId) {
+        Contract c = contractRepository.findOneByIdAndStaffId(id, staffId);
+        if (c == null) {
+            c = contractRepository.findOneById(id);
+            if (c.getStatus().equals("Ðang chờ xử lý")) {
+                c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+                c.setBuyer(buyerRepository.findOneById(c.getBuyerId()));
+                return c;
+            }
+        } else {
+            c.setBuyer(buyerRepository.findOneById(c.getBuyerId()));
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return c;
     }
 
     public Contract findOneById(int id) {
-        return contractRepository.findOneById(id);
+        Contract c = contractRepository.findOneById(id);
+        c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        return c;
     }
-    public List<Contract> findAll(){
-        return contractRepository.findAll();
+
+    public List<Contract> findAll() {
+        List<Contract> contracts = contractRepository.findAll();
+        for (Contract c : contracts) {
+            c.setContractType(contractTypeRepository.findOneById(c.getTypeId()));
+        }
+        return contracts;
 
     }
-    public List<Contract> findAllByManagerId(int id){
+
+    public List<Contract> findAllByManagerId(int id) {
         return contractRepository.findAllByManagerId(id);
     }
 }

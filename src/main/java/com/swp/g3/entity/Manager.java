@@ -16,6 +16,7 @@ public class Manager {
     private String password;
     @Nationalized
     private String role;
+    private boolean status;
 
     public boolean isStatus() {
         return status;
@@ -25,7 +26,6 @@ public class Manager {
         this.status = status;
     }
 
-    private boolean status;
 
     public Manager(){}
 

@@ -2,6 +2,7 @@ package com.swp.g3.entity;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.Nullable;
 
@@ -22,6 +23,7 @@ public class Customer {
 
     private String username;
     @NotEmpty(message = "Thiếu mật khẩu")
+    @JsonSetter(nulls = Nulls.SKIP)
     private String password;
     private String name;
     @NotEmpty(message = "Thiếu số điện thoại")
@@ -32,6 +34,7 @@ public class Customer {
     private String address;
     @NotEmpty(message = "Thiếu số căn cước công dân")
     private String ci;
+    @JsonSetter(nulls = Nulls.SKIP)
     private boolean isActive = false;
     private String role = "customer";
     @JsonSetter(nulls = Nulls.SKIP)
@@ -124,11 +127,11 @@ public class Customer {
         this.role = role;
     }
 
-    public int getManagerId() {
+    public Integer getManagerId() {
         return managerId;
     }
 
-    public void setManagerId(int managerId) {
+    public void setManagerId(Integer managerId) {
         this.managerId = managerId;
     }
 

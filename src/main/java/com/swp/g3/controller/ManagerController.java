@@ -56,24 +56,14 @@ public class ManagerController {
     @Autowired
     StaffService staffService;
     @GetMapping(value = "/api/manager/customer/list")
-    public Page<Customer> listCustomer(HttpServletRequest request,
-                                       @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                                       @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-                                       @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+    public List<Customer> listCustomer(HttpServletRequest request) {
 
         Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
         if (manager == null) {
             return null;
         }
-        Sort sortable = null;
-        if (sort.equals("ASC")) {
-            sortable = Sort.by("id").ascending();
-        }
-        if (sort.equals("DESC")) {
-            sortable = Sort.by("id").descending();
-        }
-        Pageable pageable = PageRequest.of(page, size, sortable);
-        Page<Customer> p = customerService.findCustomers(pageable);
+
+        List<Customer> p = customerService.findCustomers();
         return p;
     }
 
@@ -94,7 +84,7 @@ public class ManagerController {
         if(manager == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
-        List<Manager> p = managerService.findAll();
+        List<Manager> p = managerService.findAllByStatus(true);
         return ResponseEntity.ok(p);
     }
 
@@ -221,7 +211,7 @@ public class ManagerController {
         else if(compensation.getStatus().equals("Đang xử lý"))
         {
             compensation.setManagerId(manager.getId());
-            compensation.setStatus("Đã duyệt");
+            compensation.setStatus("Ðã duyệt");
             compensationService.save(compensation);
             return ResponseEntity.ok(compensation);
         }
@@ -278,5 +268,22 @@ public class ManagerController {
         }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
-
+    @PostMapping("/api/manager/staff/add")
+    public ResponseEntity addStaff(@RequestBody Staff staff, HttpServletRequest request){
+        if(staff.getRole().equals("staff")){
+            Manager manager = jwtTokenUtil.getManagerFromRequestToken(request);
+            try{
+                staff.setPassword(crypto.encrypt(staff.getPassword()));
+            } catch(Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Có lỗi xảy ra khi thêm nhân viên mới");
+            }
+            staff.setManagerId(manager.getId());
+            staff.setStatus(true);
+            staffService.save(staff);
+        }else{
+            Manager m = new Manager(staff);
+            managerService.save(m);
+        }
+        return ResponseEntity.ok("");
+    }
 }
