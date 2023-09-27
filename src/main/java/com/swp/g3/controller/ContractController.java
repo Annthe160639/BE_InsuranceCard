@@ -104,7 +104,7 @@ public class ContractController {
     @GetMapping(value = "/api/staff/contract/{id}")
     public ResponseEntity<?> viewContract(HttpServletRequest request, @PathVariable int id) {
         Staff staff = (Staff) jwtTokenUtil.getStaffFromRequestToken(request);
-        Contract c = contractService.findOneByIdAndStaffId(id, staff.getId());
+        Contract c = contractService.findOneById(id);
         if (c == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }

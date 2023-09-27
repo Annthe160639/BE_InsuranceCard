@@ -52,7 +52,11 @@ public class CompensationService {
     }
 
     public List<Compensation> findAll() {
-        return compensationRepository.findAll();
+        List<Compensation> compensations = compensationRepository.findAll();
+        for(Compensation c : compensations){
+            c.setContract(contractService.findOneById(c.getContractId()));
+        }
+        return compensations;
     }
 
     public List<Compensation> findAllByManagerId(int id) {

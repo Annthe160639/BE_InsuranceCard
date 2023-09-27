@@ -78,7 +78,7 @@ public class CompensationController {
         if (manager == null) {
             return null;
         } else {
-            return compensationService.findAllByManagerId(manager.getId());
+            return compensationService.findAll();
         }
     }
 
